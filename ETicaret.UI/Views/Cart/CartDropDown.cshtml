@@ -1,0 +1,64 @@
+﻿@model ICollection<ETicaret.Model.Models.Entity.BasketProduct>
+@{decimal total = 0;}
+
+<a href="javascript:;" class="cart-dropdown-icon  img-responsive appear-animation animated swing appear-animation-visible" data-appear-animation="swing" data-appear-animation-delay="0" data-appear-animation-duration="1s">
+    <i class="minicart-icon"></i>
+    <span class="cart-info">
+        <span class="cart-qty">@Model.Sum(x => x.Count)</span>
+        <span class="cart-text">item(s)</span>
+    </span>
+</a>
+
+<div class="cart-dropdownmenu right">
+    <div class="dropdownmenu-wrapper">
+        <div class="cart-products">
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    decimal unitPrice = item.Product.UnitPrice;
+                    if (item.Product.Campaigns.Count != 0)
+                    {
+                        foreach (var camp in item.Product.Campaigns.Where(x => x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now && x.IsActive == true))
+                        {
+                            unitPrice = unitPrice * (1 - camp.Discount);
+                        }
+                    }
+
+                    <div class="product product-sm">
+                        <a href="javascript:;" class="btn-remove" id="@item.ProductID" title="Remove Product">
+                            <i class="fa fa-times"></i>
+                        </a>
+                        <figure class="product-image-area">
+                            <a href="demo-shop-10-product-details.html" title="Product Name" class="product-image">
+                                <img src="/assets/img/products/@item.Product.ProductPictures.FirstOrDefault().PicturePath" alt="Product Name">
+                            </a>
+                        </figure>
+                        <div class="product-details-area">
+                            <h2 class="product-name col-md-10"><a href="/product/productdetail/@item.ProductID" title="@item.Product.ProductModel.ModelName">@item.Product.ProductModel.Make.MakeName @item.Product.ProductModel.ModelName @item.Product.ProductName</a></h2>
+                            <div class="cart-qty-price col-md-12">
+                                @item.Count X
+                                <span class="product-price">
+                                    @unitPrice.ToString("C")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    total += (unitPrice * item.Count);
+                }
+                <div class="cart-totals">
+                    Toplam:<span> @total.ToString("C")</span>
+                </div>
+
+                <a href="/Cart/Index" class="btn btn-primary center-block" style="width:80%">Sepete Git</a>
+                <hr />
+            }
+            else
+            {
+                <div class="cart-totals">
+                    <h6 class="heading-primary">Sepetinizde Ürün Bulumamaktadır.</h6>
+                </div>
+            }
+        </div>
+    </div>
+</div>

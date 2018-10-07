@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "UserCards";
+    Layout = "~/Views/Shared/_UserDetail.cshtml";
+}
+<div ng-controller="creditCard">
+    <div role="main" ng-show="!isEmpty" class="main" data-ng-init="getCardList()">
+        <div class="container main-container">
+            <div class="wrapper-container">
+                <div class="cart">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="cart-table-wrap" style="margin-bottom:10px">
+                                    <table class="cart-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Kart Tipi</th>
+                                                <th>Kart Numarası</th>
+                                                <th>Ad Soyad</th>
+                                                <th>Son Kullanım</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="card in cardList">
+                                                <td class="product-image-td">
+                                                    <a>
+                                                        <img src="{{card.LogoUrl}}" alt="Visa Card" />
+                                                    </a>
+                                                </td>
+                                                <td class="product-name-td">
+                                                    <h2 class="product-name">
+                                                        {{card.UserCardNo}}
+                                                    </h2>
+                                                </td>
+                                                <td class="product-name-td">
+                                                    <h2 class="product-name text-capitalize">
+                                                        {{card.FullName}}
+                                                    </h2>
+                                                </td>
+                                                <td class="product-name-td">
+                                                    <h2 class="product-name">
+                                                        {{card.ExpDate}}
+                                                    </h2>
+                                                </td>
+                                                <td class="product-name-td">
+                                                    @*<button type="button" class="mb-xs mt-xs mr-xs btn btn-borders btn-warning"><i class="fa fa-pencil-square-o"></i></button>*@
+                                                    <button type="button" class="mb-xs mt-xs mr-xs btn btn-borders btn-danger" ng-click="removeCard(card.UserCardID)"><i class="fa fa-close"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="5">
+                                                    <button type="button" ng-click="showAdd=!showAdd" ng-show="showAdd" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-plus"></i> Kart Ekle</button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="isEmpty">
+        <div class="heading heading-border heading-middle-border heading-middle-border-center">
+            <h3>Kayıtlı Kartınız Bulunmamaktadır.</h3>
+        </div>
+        <button type="button" ng-click="showAdd=!showAdd" ng-show="showAdd" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-plus"></i> Kart Ekle</button>
+    </div>
+
+    <div class="col-xs-12" ng-show="!showAdd" id="newCreditCard">
+        <div class="col-xs-12 col-sm-5">
+            <label class="control-label">Kart Numarası</label>
+            <div class="row" style="padding-left:15px; padding-right:15px;">
+                <div class="col-xs-12" style="padding:0">
+                    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="" class="form-control" maxlength="16" ng-model="cardNoInput" ng-change="giris()" />
+                </div>
+            </div>
+            <label class="control-label">Adı Soyadı</label>
+            <input type="text" value="" class="form-control" ng-model="adSoyad" />
+            <div class="row" style="padding-bottom:3vw">
+                <div class="col-xs-8">
+                    <label class="control-label">Son. Kul. Tarihi</label>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <select class="form-control" id="Month" ng-model="ay">
+                                @for (int i = 0; i < 12; i++)
+                                {
+                                    <option>
+                                        @DateTime.Now.AddMonths(i).ToString("MM")
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xs-6">
+                            <select class="form-control" id="Year" ng-model="yil">
+                                @for (int i = 0; i < 10; i++)
+                                {
+                                    <option>
+                                        @DateTime.Now.AddYears(i).ToString("yy")
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <label class="control-label">CVC2</label>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="text" maxlength="3" value="" class="form-control" ng-model="secCode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <button type="button" ng-click="addCard()" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-plus"></i> Kart Ekle</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-offset-2 col-xs-8 col-xs-offset-2 col-sm-offset-0 col-sm-7 col-sm-offset-0">
+            <img class="img-responsive" src="~/Assets/img/{{img}}" />
+            <span class="cardNumber">{{cardNo}}</span>
+            <span class="fullname text-uppercase">{{adSoyad}}</span>
+            <span class="expDate">{{ay}}/{{yil}}</span>
+            <span class="secCode">{{secCode}}</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>

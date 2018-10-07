@@ -1,0 +1,68 @@
+﻿@model ETicaret.Model.Models.Entity.Category
+
+@*<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>*@
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Default Modal</h4>
+        </div>
+        <div class="modal-body">
+            <p>@Html.DisplayFor(x => x.CategoryName)</p>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CategoryName)
+                @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Description)
+                @Html.TextAreaFor(x => x.Description, new { @class = "form-control" })
+            </div>
+
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">İptal</button>
+            <button type="button" id="editCategory" class="btn btn-primary">Güncelle</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+<!-- /.modal -->
+
+<script>
+
+    $('#editCategory').click(function () {
+
+        var data = {
+            CategoryID:'@Model.CategoryID',
+            CategoryName: $('#categoryModal #CategoryName').val(),
+            Description: $('#categoryModal #Description').val(),
+        };
+
+        $.ajax({
+            url: "/Admin/Category/EditModal",
+            data: data,
+            dataType: 'JSON',
+            type: 'post',
+            success: function (result) {
+                if (result == true) {
+                    $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageSuccess.cshtml")');
+                    $('#modalSuccess').modal('show');
+                    $('#categoryModal').modal('hide');
+                }
+                else {
+                    $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageError.cshtml")');
+                    $('#modalSuccess').modal('show');
+                    $('#categoryModal').modal('hide');
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,103 @@
+﻿@model VMUserDetailEdit
+
+@{
+    ViewBag.Title = "editProfile";
+    Layout = "~/Views/Shared/_UserDetail.cshtml";
+}
+<div class="featured-box featured-box-primary featured-box-flat featured-box-text-left mt-md">
+    <div class="box-content">
+        @{
+            if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    @ViewBag.Error
+                </div>
+            }
+            else if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    @ViewBag.Success
+                </div>
+            }
+        }
+
+        @using (Html.BeginForm(FormMethod.Post))
+        {
+            <h4 class="heading-primary text-uppercase mb-lg">HESAP BİLGİLERİ</h4>
+            <div class="row">
+                <div class="col-sm-5 col-md-5">
+                    <div class="form-group">
+                        <label class="font-weight-normal">İsim Soyisim <span class="required">*</span></label>
+                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", type = "text" })
+                        @Html.ValidationMessageFor(x => x.FullName)
+                    </div>
+                </div>
+
+                <div class="col-sm-7 col-md-7">
+                    <div class="form-group">
+                        <label class="font-weight-normal">E-Posta Adresi <span class="required">*</span></label>
+                        @Html.TextBoxFor(x => x.EMail, new { @class = "form-control", type = "text" })
+                        @Html.ValidationMessageFor(x => x.EMail)
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-normal">Telefon Numarası</label>
+                        @Html.EditorFor(model => model.Telephone, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+                    </div>
+                </div>  <div class="col-sm-6 col-md-offset-1 col-md-5">
+                    <div class="form-group">
+                        <label class="font-weight-normal">Cinsiyet </label>
+                        <div class="radio">
+                            <label class="col-sm-3"> @Html.RadioButtonFor(model => model.Gender, true) Bay</label>
+                            <label class="col-sm-6"> @Html.RadioButtonFor(model => model.Gender, false) Bayan</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-normal">Mevcut Şifre</label>
+                        @Html.EditorFor(x => x.LastPassword, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(x => x.LastPassword)
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-normal">Yeni Şifre</label>
+                        @Html.EditorFor(x => x.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(x => x.Password)
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-normal">Yeni Şifre Tekrar</label>
+                        @Html.EditorFor(x => x.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p class="required mt-lg mb-none">* Doldurulması Gerekli Alanlar</p>
+
+                    <div class="form-action clearfix mt-none">
+                        <input type="submit" class="btn btn-primary" value="Güncelle">
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

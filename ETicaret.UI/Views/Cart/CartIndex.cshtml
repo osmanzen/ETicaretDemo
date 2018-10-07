@@ -1,0 +1,111 @@
+﻿@model ICollection<BasketProduct>
+@{decimal total = 0;}
+<div class="row">
+    <div class="col-md-8 col-lg-9">
+        <div class="cart-table-wrap">
+            @if (Model.Count > 0)
+            {
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Ürün Adı</th>
+                            <th>Ürün Fiyatı</th>
+                            <th class="align-center">Adet</th>
+                            <th>Ara Toplam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            decimal unitPrice = item.Product.UnitPrice;
+                            if (item.Product.Campaigns.Count != 0)
+                            {
+                                foreach (var camp in item.Product.Campaigns.Where(x => x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now && x.IsActive == true))
+                                {
+                                    unitPrice = unitPrice * (1 - camp.Discount);
+                                }
+                            }
+                            <tr>
+                                <td class="product-action-td">
+                                    <a href="#" id="@item.ProductID" title="Ürünü Çıkart" class="btn-remove"><i class="fa fa-times"></i></a>
+                                </td>
+                                <td class="product-image-td">
+                                    <a href="#" title="Product Name">
+                                        <img src="/assets/img/products/@item.Product.ProductPictures.OrderBy(x=>x.PicturePath).FirstOrDefault(x=>x.IsActive==true).PicturePath" alt="Product Name">
+                                    </a>
+                                </td>
+                                <td class="product-name-td">
+                                    <h2 class="product-name"><a href="/Product/Index/@item.ProductID" title="Product Name">@item.Product.ProductModel.Make.MakeName @item.Product.ProductModel.ModelName @item.Product.ProductName</a></h2>
+                                </td>
+
+
+                                <td>@unitPrice.ToString("C")</td>
+                                <td>
+                                    <div class="qty-holder">
+                                        <button class="qty-dec-btn" title="Azalt" onclick="addCart('@item.ProductID','-1')">-</button>
+                                        <input type="text" class="qty-input" value="@item.Count" disabled>
+                                        <button class="qty-inc-btn" title="Arttır" onclick="addCart('@item.ProductID','1')">+</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-primary">@((unitPrice * item.Count).ToString("C"))</span>
+                                </td>
+                            </tr>
+                            total += (unitPrice * item.Count);
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="clearfix">
+                                <a href="/Home/Index" class="btn btn-default hover-primary btn-continue">Alışverişe Devam</a>
+                                <button onclick="getCartDropdown()" class="btn btn-default hover-primary btn-update">Güncelle</button>
+                                <button onclick="ClearCart()" class="btn btn-default hover-primary btn-clear">Temizle</button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+            else
+            {
+                <h3>Sepetinizde Ürün Bulunmamaktadır.</h3>
+            }
+        </div>
+    </div>
+    <aside class="col-md-4 col-lg-3 sidebar shop-sidebar">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="accordion-toggle" data-toggle="collapse" href="#panel-cart-total">
+                            Sepet Tutarı
+                        </a>
+                    </h4>
+                </div>
+                <div id="panel-cart-total" class="accordion-body collapse in">
+                    <div class="panel-body">
+                        <table class="totals-table">
+                            <tbody>
+                                <tr>
+                                    <td>Ürün Adedi</td>
+                                    <td>@Model.Sum(x => x.Count)</td>
+                                </tr>
+                                <tr>
+                                    <td>Genel Toplam</td>
+                                    <td>@total.ToString("C")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        @if (Model.Count > 0)
+                        {
+                            <div class="totals-table-action">
+                                <a href="@Url.Action("OrderControl","Cart")" class="btn btn-primary btn-block">Alışverişi Tamamla</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>

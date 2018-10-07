@@ -1,0 +1,275 @@
+﻿@model ETicaret.UI.Models.ViewModels.VMCategoryListing
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+
+}
+
+
+<div id="mobile-menu-overlay"></div>
+
+<div role="main" class="main">
+    @*@using (Html.BeginForm("Index", "Category", FormMethod.Post))
+        {*@
+
+
+    <section class="page-header">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/Home/Index">Home</a></li>
+
+                <li class="active"><a href="/Category/Index/@Model.CategoryList.First().SCategory.CategoryID">@Model.CategoryList.First().SCategory.CategoryName</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="container main-container">
+        <div class="wrapper-container">
+            <div class="container">
+                <div class="row" @*ng-app -> customdaki angular"*@ ng-controller="categoryListController">
+                    @* Sag Taraf *@
+                    <div class="col-md-9 col-md-push-3">
+                        @* Urunler *@
+
+                        @* Model ile *@
+                        <ul class="products-grid columns3" id="productInModel">
+                            @{  var index = 1;
+                                int i = 0;
+                                foreach (var item in Model.ProductList.Skip(i*2).Take(2))
+                                {
+                                    <li>
+                                        <div class="product">
+                                            <figure class="product-image-area">
+                                                <a href="/Product/ProductDetail/@item.ProductID" title="Product Name" class="product-image">
+                                                    <img src="~/Assets/img/products/@item.PicturePath" alt="Product Name">
+                                                    @*   <img src="img/demos/shop/products/product1-2.jpg" alt="Product Name" class="product-hover-image">*@
+                                                </a>
+                                                <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@item.ProductID">
+                                                    <i class="fa fa-share-square-o"></i>
+                                                    <span>Quick View</span>
+                                                </a>
+                                                @* İndirim Miktarı (Varsa) *@
+                                                @if (item.hasCampaign)
+                                                {
+                                                    <div class="product-label">
+                                                        <span class="discount">
+                                                            @item.TotalDiscount İndirim Fırsatıyla
+                                                        </span>
+                                                    </div>
+                                                }
+
+
+                                            </figure>
+                                            <div class="product-details-area">
+                                                @* Urun adı *@
+                                                <h2 class="product-name"><a href="/Product/ProductDetail/@item.ProductID" title="Product Name">@item.ModelName -@item.ProductName</a></h2>
+                                                @* Fiyat *@
+                                                <div class="product-price-box">
+                                                    @if (item.hasCampaign)
+                                                    {
+                                                        <div class="product-ratings">
+                                                            <span class="old-price">@item.UnitPrice</span>
+                                                        </div>
+
+                                                        <span class="product-price">@item.TotalPrice</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="product-price">@item.UnitPrice</span>
+
+                                                    }
+
+
+                                                </div>
+
+                                                <div class="product-actions">
+                                                    <a href="#" class="addtocart" title="Add to Cart" id="@item.ProductID">
+                                                        <i class="fa fa-shopping-cart"></i>
+                                                        <span>Add to Cart</span>
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            }
+
+                        </ul>
+
+                        @* Repeater ile *@
+                        <ul class="products-grid columns3">
+
+                            <li ng-repeat="item in ProductList.slice((i*2)-2,i*2) ">
+                                <div class="product">
+                                    <figure class="product-image-area">
+                                        <a href="/Product/ProductDetail/{{item.ProductID}}" title="Product Name" class="product-image">
+                                            <img src="~/Assets/img/products/{{item.PicturePath}}" alt="Product Name">
+                                            @*   <img src="img/demos/shop/products/product1-2.jpg" alt="Product Name" class="product-hover-image">*@
+                                        </a>
+                                        <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="{{item.ProductID}}">
+                                            <i class="fa fa-share-square-o"></i>
+                                            <span>Quick View</span>
+                                        </a>
+                                        @* İndirim Miktarı (Varsa) *@
+                                        <div ng-if="item.hasCampaign">
+                                            <div class="product-label">
+                                                <span class="discount">
+                                                    {{item.TotalDiscount}} İndirim Fırsatıyla
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </figure>
+                                    <div class="product-details-area">
+                                        @* Urun adı *@
+                                        <h2 class="product-name"><a href="/Product/ProductDetail/{{item.ProductID}}" title="Product Name">{{item.ModelName}} -{{item.ProductName}}</a></h2>
+                                        @* Fiyat *@
+                                        <div class="product-price-box">
+                                            <div ng-if="item.hasCampaign">
+                                                <div class="product-ratings">
+                                                    <span class="old-price">{{item.UnitPrice}}</span>
+                                                </div>
+                                                <span class="product-price">{{item.TotalPrice}}</span>
+                                            </div>
+                                            <span class="product-price" ng-if="item.hasCampaign!==true">{{item.UnitPrice}}</span>
+
+
+                                        </div>
+
+                                        <div class="product-actions">
+                                            <a href="#" class="addtocart" title="Add to Cart" id="{{item.ProductID}}">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span>Add to Cart</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+
+                        <div class="toolbar-bottom">
+                            <div class="toolbar">
+                                <div class="sorter">
+                                    <ul class="pagination">
+
+                                        <li><a href="" ng-click="ChangeFilter('',minVal,maxVal);ChangeIndex(1)">1</a></li>
+                                        <li id="modelPageList">
+
+                                            @if (Model.ProductList.Count > 2)
+                                            {
+                                                for (i = 1; i < Model.ProductList.Count / 2; i++)
+                                                {
+                                                    index += i;
+
+                                                    <a href="" ng-click="ChangeFilter('',minVal,maxVal);ChangeIndex('@index')"> @index</a>
+
+                                                }
+                                            }
+                                        </li>
+                                        @*<li ng-repeat="i in pageList"><a href="" ng-model="{{i.value}}" ng-click="ChangeFilter('',0,0);ChangeIndex(i.value)">{{i.value}}</a></li>*@
+
+                                        <li><a ng-click="ChangeFilter('',0,0);ChangeIndex('@index')"><i class="fa fa-caret-right"></i></a></li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @* Sol taraf *@
+                    <aside class="col-md-3 col-md-pull-9 sidebar shop-sidebar">
+                        <div class="panel-group">
+                            @* Kategoriler *@
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a class="accordion-toggle" data-toggle="collapse" href="#panel-filter-category">
+                                            Kategoriler
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="panel-filter-category" class="accordion-body collapse in">
+                                    <div class="panel-body">
+                                        <ul>
+                                            @foreach (var item in Model.CategoryList)
+                                            {
+                                                var totalProduct = 0;
+                                                foreach (var catModel in @item.ProductModels)
+                                                {
+                                                    totalProduct += catModel.Products.Count;
+                                                }
+                                                <li><a href="/Category/Index/@item.CategoryID">@item.CategoryName (@totalProduct)</a></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            @* Fiyat Aralıgı *@
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a class="accordion-toggle" data-toggle="collapse" href="#panel-filter-price">
+                                            Fiyat Aralığı
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="panel-filter-price" class="accordion-body collapse in">
+                                    <div class="panel-body">
+                                        <div class="filter-price">
+                                            <div id="price-slider"></div>
+                                            <div class="filter-price-details">
+                                                <span>from</span>
+                                                <input type="text" id="price-range-low" class="form-control" @*ng-if="minVal<maxVal? minVal:maxVal"*@ placeholder="Min" ng-model="minVal">
+                                                <span>to</span>
+                                                <input type="text" id="price-range-high" class="form-control"  placeholder="Max" ng-model="maxVal">
+                                                <a href="javascript:;" class="btn btn-primary" ng-click="ChangeFilter('',minVal,maxVal)">FILTER</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @* Markalar *@
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a class="accordion-toggle" data-toggle="collapse" href="#panel-filter-brand">
+                                            Markalar
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="panel-filter-brand" class="accordion-body collapse in">
+                                    <div class="panel-body">
+                                        <ul>
+                                            <li><a href="javascript:;" ng-click="ChangeFilter('', minVal,maxVal)">Tüm Markalar (@Model.ProductList.Count)</a></li>
+                                            
+                                                @foreach (var item in Model.MakeList)
+                                                {
+                                                    var totalProduct = 0;
+                                                    foreach (var MakeModel in @item.Models)
+                                                    {
+                                                        totalProduct += MakeModel.Products.Count;
+                                                    }
+                                                    <li><a href="javascript:;" ng-click="ChangeFilter('@item.MakeID.ToString()',minVal,maxVal)" >@item.MakeName (@totalProduct)</a></li>
+                                                }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* } *@
+</div>
+<div class="modal" id="quickViewModal" tabindex="-1" role="dialog" aria-labelledby="quickViewModalLabel" aria-hidden="true"></div>
+<script>
+
+    //script customAngular.js de categoryListController
+
+</script>

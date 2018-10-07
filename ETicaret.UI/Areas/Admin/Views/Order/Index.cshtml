@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Order>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Siparişler</h2>
+
+<section class="content" ng-app="myApp" ng-controller="myCont">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Tüm Siparişler</h3>
+
+                    <div class="box-tools">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                            <li><a href="javascript:;" ng-click="ChangePage($index)" ng-repeat="li in numberLi">{{$index+1}}</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ödeme Tİpi</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                        </tr>
+                        @foreach (Order item in Model)
+                        {
+                            <tr ng-show="ordersTr.length==0">
+                                <td><a href="/Admin/Order/Detail/@item.OrderID">183</a></td>
+                                <td>@item.PaymentType.PaymentName</td>
+                                <td title="@item.CreatedTime">@item.CreatedTime.ToString("dd-MM-yyyy")</td>
+                                @if (item.OrderStatusID == Guid.Parse("1acfa5c8-7058-4155-bc74-edb2ed04f1e6"))
+                                {
+                                    <td><span class="label label-primary">@item.OrderStatus.Status</span></td>
+                                }
+                                else if (item.OrderStatusID == Guid.Parse("e23bab39-9a46-412f-8b1e-9c7307221da3"))
+                                {
+                                    <td><span class="label label-warning">@item.OrderStatus.Status</span></td>
+                                }
+                                else if (item.OrderStatusID == Guid.Parse("397f83d3-5475-42e3-b5a5-5cb80be26fcf"))
+                                {
+                                    <td><span class="label label-success">@item.OrderStatus.Status</span></td>
+                                }
+                                else if (item.OrderStatusID == Guid.Parse("7a75cdfb-52a3-4455-a8c2-08d6de333e45"))
+                                {
+                                    <td><span class="label label-default">@item.OrderStatus.Status</span></td>
+                                }
+                            </tr>
+                        }
+
+                        <tr ng-repeat="tr in ordersTr">
+                            <td><a href="/Admin/Order/Detail/{{tr.OrderID}}">183</a></td>
+                            <td>{{tr.PaymentName}}</td>
+                            <td title="{{tr.CreatedTime.slice(6,19)  | date:'dd-MM-yyyy HH:mm:ss'}}">{{tr.CreatedTime.slice(6,19) | date:'dd/MM/yyyy'}}</td>
+                            <td><span class="label label-{{tr.OrderStatusID=='1acfa5c8-7058-4155-bc74-edb2ed04f1e6' ? 'primary' : tr.OrderStatusID=='e23bab39-9a46-412f-8b1e-9c7307221da3' ? 'warning' : tr.OrderStatusID=='397f83d3-5475-42e3-b5a5-5cb80be26fcf' ? 'success' : 'default'}}">{{tr.Status}}</span></td>
+                        </tr>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+    </div>
+</section>
+
+<script>
+    var app = angular.module('myApp', []);
+
+    app.controller('myCont', function ($scope, $http) {
+
+        $scope.numberLi = [];
+        $scope.ordersTr = [];
+
+        $http({
+            method: 'get',
+            url: '/Admin/Order/GetOrderCount'
+        }).then(function succ(res) {
+            if (res.data != null) {
+                for (var i = 0; i < res.data / 5; i++) {
+                    $scope.numberLi.push(i);
+                }
+            }
+            });
+
+        $scope.ChangePage = function (index) {
+            $http({
+                method: 'get',
+                url: '/Admin/Order/GetOrdersForPage/' + index
+            }).then(function succ(res) {
+                console.log(res.data);
+                if (res.data.length > 0)
+                    $scope.ordersTr = res.data;
+            });
+        };
+
+    });
+</script>

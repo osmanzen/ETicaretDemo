@@ -1,0 +1,93 @@
+﻿@model ETicaret.UI.Areas.Admin.Models.DTO.VMModelAdd
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section>
+
+    <div class="col-xs-6 col-xs-offset-3" ng-app="modelApp" ng-controller="modelController" style="margin-top:100px;">
+        @using (Html.BeginForm("Add", "ProductModel", FormMethod.Post, new { Name = "form", @ng_submit = "formSubmit($event)" }))
+        {
+            <div class="form-group {{(form.$submitted || form.MakeID.$touched) && selectedMake==null ? 'has-error' : '' }}">
+                @Html.Label("Marka")
+                @Html.DropDownList("MakeID", new SelectList(Model.Makes.Select(x => new { Value = x.MakeID, Text = x.MakeName }), "Value", "Text"), "Seçiniz", new { @class = "form-control", @required = "", @ng_model = "selectedMake", @ng_change = "SelectedMake()" })
+                <span ng-show="(form.$submitted || form.MakeID.$touched) && selectedMake==null" class="help-block">Boş geçilemez!</span>
+            </div>
+
+            <div class="form-group {{(form.$submitted || form.CategoryID.$touched) && cID==null ? 'has-error' : '' }}">
+                @Html.Label("Kategori")
+                <select class="form-control subCategories" name="CategoryID" ng-model="cID" required>
+                    <option value="">Seçiniz</option>
+                    <option ng-repeat="option in categories" value="{{option.CategoryID}}">{{option.CategoryName}}</option>
+                </select>
+                <span ng-show="(form.$submitted || form.CategoryID.$touched) && cID==null" class="help-block">Boş geçilemez!</span>
+            </div>
+
+            <div class="form-group {{((form.$submitted || form.ModelName.$touched) &&  form.ModelName.$error.required) || SameName ? 'has-error' : '' }}">
+                @Html.Label("Model Adı")
+                @Html.TextBoxFor(x => x.ModelName, new { @class = "form-control", @required = "", @ng_model = "modelname", @ng_change = "NameControl()" })
+                <span ng-show="(form.$submitted || form.ModelName.$touched) && form.ModelName.$error.required" class="help-block">Boş geçilemez!</span>
+                <span ng-show="SameName" class="help-block">Aynı isimde Model eklenemez!</span>
+            </div>
+
+            @Html.ActionLink("İptal", "Index", "Model", null, new { @class = "btn btn-default col-xs-4 col-xs-offset-2", style = "background-color:#e23d28f7;color:white" })
+            <input type="submit" class="btn btn-primary col-xs-4 col-xs-offset-1" value="Kaydet" />
+        }
+    </div>
+
+</section>
+<script>
+    var app = angular.module("modelApp", []);
+    app.controller("modelController", function ($scope, $http) {
+        $scope.categories = [];
+
+        $scope.SelectedMake = function () {
+            $scope.GetSubCategories($scope.selectedMake);
+        };
+
+
+        $scope.GetSubCategories = function (id) {
+            $scope.categories = [];
+            if (id == "") return;//category boş ise direk çık
+
+            $http({
+                method: 'GET',
+                url: "/Admin/Category/GetCategoriesByMake/" + id
+            }).then(function (response) {
+                if (response.data.length != 0) {
+
+                    $scope.categories = response.data;
+
+                }
+                else {
+                    $scope.categories = [];
+
+                }
+            });
+        };
+
+        $scope.NameControl = function () {
+            $http({
+                method: 'get',
+                url: '/Admin/ProductModel/GetModelByName/' + $scope.modelname
+            }).then(function succ(res) {
+                if (res.data.length > 0) {
+                    $scope.SameName = true;
+                }
+                else
+                    $scope.SameName = false;
+            });
+        };
+
+        $scope.formSubmit = function ($event) {
+            // our function body
+            if ($scope.form.$valid && $scope.SameName == false) {
+                //alert çıkartılabilir :)
+            }
+            else {
+                $event.preventDefault();
+            }
+        };
+    });
+</script>

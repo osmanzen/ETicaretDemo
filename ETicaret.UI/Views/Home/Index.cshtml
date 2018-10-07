@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Anasayfa";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+@{Html.RenderAction("GetSlider");}
+
+<div class="one-product-container">
+    <div class="container">
+        <div class="row">
+            @{Html.RenderAction("TopProductContainer");}
+        </div>
+    </div>
+</div>
+
+@{ Html.RenderAction("ProductContainer"); }
+
+<div class="modal" id="quickViewModal" tabindex="-1" role="dialog" aria-labelledby="quickViewModalLabel" aria-hidden="true"></div>

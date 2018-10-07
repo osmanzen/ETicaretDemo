@@ -1,0 +1,151 @@
+﻿@model Order
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Detail</h2>
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Sipariş
+        <small>#@Model.OrderID</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Examples</a></li>
+        <li class="active">Invoice</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="invoice">
+    <!-- title row -->
+    <div class="row">
+        <div class="col-xs-12">
+            <h2 class="page-header">
+                <i class="fa fa-globe"></i> Kacaolur.com
+                <small class="pull-right">Tarih: @Model.CreatedTime.ToString("dd/MM/yyyy")</small>
+            </h2>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+        <div class="col-sm-4 invoice-col">
+            Gönderen
+            <address>
+                <strong>Kacaolur.com</strong><br>
+                Zeytinlik Mah. Fişekhane Cad. No:14<br>
+                Bakırköy, İstanbul/Türkiye<br>
+                Telefon: (804) 123-5432<br>
+                EPosta: info@kacaolur.com
+            </address>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-4 invoice-col">
+            Alıcı
+            <address>
+                <strong>@Model.User.FullName</strong><br>
+                @Model.UserAddress.Address<br>
+                @Model.UserAddress.District.DistrictName,@Model.UserAddress.District.City.CityName<br>
+                Telefon: @String.Format("{0:(###) ###-####}", Convert.ToInt64(Model.UserDetail.Telephone.Substring(1)))<br>
+                EPosta: @Model.User.Email
+            </address>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-4 invoice-col">
+            <b>@*Invoice #007612*@</b><br>
+            <br>
+            <b>Order ID:</b> @Model.OrderID<br>
+            <b>Tarih:</b> @Model.CreatedTime.ToString("dd/MM/yyyy HH:mm:ss")<br>
+            <b>Account:</b> 968-34567
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <!-- Table row -->
+    <div class="row">
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Adet</th>
+                        <th>Ürün</th>
+                        <th>Fiyat</th>
+                        <th>Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (OrderDetail item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@item.Count</td>
+                            <td>@item.Product.ProductModel.ModelName @item.Product.ProductName</td>
+                            <td>@item.Product.UnitPrice</td>
+                            <td>@(item.Product.UnitPrice * @item.Count)</td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <!-- accepted payments column -->
+        <div class="col-xs-6">
+            <p class="lead">Ödeme Şekli ve Notlar:</p>
+            @Model.PaymentType.PaymentName
+            <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg
+                dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+            </p>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-6">
+            <p class="lead">Fatura</p>
+            <div class="table-responsive">
+                <table class="table">
+
+                    <tr>
+                        <th>Toplam:</th>
+                        <td>@Model.TotalAmount</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <!-- this row will not appear when printing -->
+    <div class="row no-print">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("ChangeOrderStatus", "Order", FormMethod.Post))
+            {
+                <input type="hidden" name="id" value="@Model.OrderID" />
+                if (Model.OrderStatusID == Guid.Parse("7a75cdfb-52a3-4455-a8c2-08d6de333e45"))
+                {
+                    <input type="hidden" name="statusid" value="e23bab39-9a46-412f-8b1e-9c7307221da3" />
+                    <button type="submit" class="btn btn-warning pull-right" style="margin-right: 5px;">Hazırlanıyor Yap</button>
+                }
+                else if (Model.OrderStatusID == Guid.Parse("e23bab39-9a46-412f-8b1e-9c7307221da3"))
+                {
+                    <input type="hidden" name="statusid" value="397f83d3-5475-42e3-b5a5-5cb80be26fcf" />
+                    <button type="submit" class="btn btn-success pull-right" style="margin-right: 5px;">Kargoya Verildi Yap</button>
+                }
+                else if (Model.OrderStatusID == Guid.Parse("397f83d3-5475-42e3-b5a5-5cb80be26fcf"))
+                {
+                    <input type="hidden" name="statusid" value="1acfa5c8-7058-4155-bc74-edb2ed04f1e6" />
+                    <button type="submit" class="btn btn-primary pull-right" style="margin-right: 5px;">Teslim Edildi Yap</button>
+                }
+            }
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+<div class="clearfix"></div>

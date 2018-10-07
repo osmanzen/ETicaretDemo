@@ -1,0 +1,162 @@
+﻿@using ETicaret.Model.Models.Entity
+@model ICollection<Product>
+
+
+<div class="col-sm-4">
+    <div class="one-product">
+        <h3>Öne Çıkanlar</h3>
+
+        <div class="owl-carousel owl-theme" data-plugin-options='{"items":1, "loop": false}'>
+
+            @foreach (var item in Model.OrderByDescending(x => x.ViewCount).Take(3).ToList())
+            {
+                <div class="product">
+                    <figure class="product-image-area">
+                        <a href="/Product/ProductDetail/@item.ProductID" title="Product Name" class="product-image">
+                            <img src="~/assets/img/products/@item.ProductPictures.OrderBy(x=>x.PicturePath).FirstOrDefault().PicturePath" alt="Product Name">
+                        </a>
+
+                        <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@item.ProductID">
+                            <i class="fa fa-share-square-o"></i>
+                            <span>Quick View</span>
+                        </a>
+                    </figure>
+                    <div class="product-details-area">
+                        <h2 class="product-name"><a href="/Product/ProductDetail/@item.ProductID" title="Product Name">@item.ProductModel.Make.MakeName @item.ProductModel.ModelName @item.ProductName</a></h2>
+                        <div class="product-ratings">
+                            <div class="ratings-box">
+                                <div class="rating" style="width:100%"></div>
+                            </div>
+                        </div>
+                        <div class="product-price-box">
+                            @{  if (item.Campaigns.Count != 0)
+                                {
+                                    <span class="old-price">@item.UnitPrice.ToString("C")</span>
+                                    var totalPrice = item.UnitPrice;
+                                    foreach (var campaign in item.Campaigns)
+                                    {
+                                        totalPrice = totalPrice * (1 - campaign.Discount);
+                                    }
+
+                                    <span class="product-price">@totalPrice.ToString("C")</span>
+                                }
+                                else
+                                {
+                                    <span class="product-price">@item.UnitPrice</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                                }
+
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-4">
+    <div class="one-product">
+        <h3>En Yeniler</h3>
+
+        <div class="owl-carousel owl-theme" data-plugin-options='{"items":1, "loop": false}'>
+
+            @foreach (var item in Model.Reverse().Take(3).ToList())
+            {
+                <div class="product">
+                    <figure class="product-image-area">
+                        <a href="/Product/ProductDetail/@item.ProductID" title="Product Name" class="product-image">
+                            <img src="~/assets/img/products/@item.ProductPictures.OrderBy(x=>x.PicturePath).FirstOrDefault().PicturePath" alt="Product Name">
+                        </a>
+
+                        <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@item.ProductID">
+                            <i class="fa fa-share-square-o"></i>
+                            <span>Quick View</span>
+                        </a>
+                        <div class="product-label"><span class="new">Yeni</span></div>
+                    </figure>
+                    <div class="product-details-area">
+                        <h2 class="product-name"><a href="/Product/ProductDetail/@item.ProductID" title="Product Name">@item.ProductModel.Make.MakeName @item.ProductModel.ModelName @item.ProductName</a></h2>
+                        <div class="product-ratings">
+                            <div class="ratings-box">
+                                <div class="rating" style="width:100%"></div>
+                            </div>
+                        </div>
+                        <div class="product-price-box">
+                            @{  if (item.Campaigns.Count != 0)
+                                {
+                                    <span class="old-price">@item.UnitPrice.ToString("C")</span>
+                                    var totalPrice = item.UnitPrice;
+                                    foreach (var campaign in item.Campaigns)
+                                    {
+                                        totalPrice = totalPrice * (1 - campaign.Discount);
+                                    }
+
+                                    <span class="product-price">@totalPrice.ToString("C")</span>
+                                }
+                                else
+                                {
+                                    <span class="product-price">@item.UnitPrice</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@*DEĞİŞTİRİLECEK*@
+
+<div class="col-sm-4">
+    <div class="one-product">
+        <h3>EN ÇOK SATANLAR</h3>
+
+        <div class="owl-carousel owl-theme" data-plugin-options='{"items":1, "loop": false}'>
+
+            @foreach (var item in Model.OrderByDescending(x => x.ViewCount).Take(3).ToList())
+            {
+                <div class="product">
+                    <figure class="product-image-area">
+                        <a href="/Product/ProductDetail/@item.ProductID" title="Product Name" class="product-image">
+                            <img src="~/assets/img/products/@item.ProductPictures.OrderBy(x=>x.PicturePath).FirstOrDefault().PicturePath" alt="Product Name">
+                        </a>
+
+                        <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@item.ProductID">
+                            <i class="fa fa-share-square-o"></i>
+                            <span>Quick View</span>
+                        </a>
+                    </figure>
+                    <div class="product-details-area">
+                        <h2 class="product-name"><a href="/Product/ProductDetail/@item.ProductID" title="Product Name">@item.ProductModel.Make.MakeName @item.ProductModel.ModelName @item.ProductName</a></h2>
+                        <div class="product-ratings">
+                            <div class="ratings-box">
+                                <div class="rating" style="width:100%"></div>
+                            </div>
+                        </div>
+                        <div class="product-price-box">
+                            @{  if (item.Campaigns.Count != 0)
+                                {
+                                    <span class="old-price">@item.UnitPrice.ToString("C")</span>
+                                    var totalPrice = item.UnitPrice;
+                                    foreach (var campaign in item.Campaigns)
+                                    {
+                                        totalPrice = totalPrice * (1 - campaign.Discount);
+                                    }
+
+                                    <span class="product-price">@totalPrice.ToString("C")</span>
+                                }
+                                else
+                                {
+                                    <span class="product-price">@item.UnitPrice</span>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

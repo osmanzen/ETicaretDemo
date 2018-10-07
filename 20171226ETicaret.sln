@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicaret.Model", "ETicaretModel\ETicaret.Model.csproj", "{D59DF644-EDBF-4333-86C2-0990977648D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicaret.DAL", "ETicaret.DAL\ETicaret.DAL.csproj", "{8C9EEBBC-284B-403A-B895-280233D2A3EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{757CDFCD-F961-4B36-8AF4-5D749B61DD14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicaret.UI", "ETicaret.UI\ETicaret.UI.csproj", "{A7817D6E-0BBE-4835-9FEC-35D381E4D73A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D59DF644-EDBF-4333-86C2-0990977648D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D59DF644-EDBF-4333-86C2-0990977648D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D59DF644-EDBF-4333-86C2-0990977648D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D59DF644-EDBF-4333-86C2-0990977648D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C9EEBBC-284B-403A-B895-280233D2A3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9EEBBC-284B-403A-B895-280233D2A3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9EEBBC-284B-403A-B895-280233D2A3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9EEBBC-284B-403A-B895-280233D2A3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{757CDFCD-F961-4B36-8AF4-5D749B61DD14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{757CDFCD-F961-4B36-8AF4-5D749B61DD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{757CDFCD-F961-4B36-8AF4-5D749B61DD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{757CDFCD-F961-4B36-8AF4-5D749B61DD14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7817D6E-0BBE-4835-9FEC-35D381E4D73A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7817D6E-0BBE-4835-9FEC-35D381E4D73A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7817D6E-0BBE-4835-9FEC-35D381E4D73A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7817D6E-0BBE-4835-9FEC-35D381E4D73A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://commentless.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ETicaretModel\\ETicaret.Model.csproj
+		SccProjectName1 = ETicaretModel
+		SccLocalPath1 = ETicaretModel
+		SccProjectUniqueName2 = ETicaret.DAL\\ETicaret.DAL.csproj
+		SccProjectName2 = ETicaret.DAL
+		SccLocalPath2 = ETicaret.DAL
+		SccProjectUniqueName3 = Core\\Core.csproj
+		SccProjectName3 = Core
+		SccLocalPath3 = Core
+		SccProjectUniqueName4 = ETicaret.UI\\ETicaret.UI.csproj
+		SccProjectName4 = ETicaret.UI
+		SccLocalPath4 = ETicaret.UI
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,28 @@
+﻿@model ETicaret.Model.Models.Entity.Make
+
+@*<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>*@
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Marka: <b>@Html.DisplayFor(x => x.MakeName)</b></h4>
+        </div>
+        <div class="modal-body">
+            <p>Silme İşlemini Onaylıyor Musunuz?</p>
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">İptal</button>
+            <button type="submit" id="edit" class="btn btn-primary">Sil</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+

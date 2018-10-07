@@ -1,0 +1,7 @@
+﻿@model IEnumerable<Category>
+
+<div class="form-group category">
+    @Html.LabelFor(x => x, "Kategori")
+    @Html.DropDownList("CategoryID", new SelectList(Model.Select(x => new { Value = x.CategoryID, Text = x.CategoryName }), "Value", "Text"), "Seçiniz", new { @class = "form-control category"})
+
+</div>

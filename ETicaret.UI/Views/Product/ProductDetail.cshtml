@@ -1,0 +1,414 @@
+﻿@model ETicaret.UI.Models.ViewModels.VMProductDetail
+@{
+    ViewBag.Title = "ProductDetail";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div id="mobile-menu-overlay"></div>
+@using (Html.BeginForm("PRoductDetail", "Product", FormMethod.Post))
+{
+
+
+    <div role="main" class="main">
+
+        <section class="page-header">
+            <div class="container">
+                <ul class="breadcrumb">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+
+                    <li><a href="/Category/Index/@Model.Product.ProductModel.CategoryID">@Model.Product.ProductModel.Category.CategoryName</a></li>
+                    <li class="active">@Model.Product.ProductModel.Make.MakeName @Model.Product.ProductModel.ModelName - @Model.Product.ProductName</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" @*ng-app="productDetailApp"*@ ng-controller="productDetailController">
+            <div class="product-view">
+                <div class="product-essential">
+                    <div class="row">
+                        <div class="product-img-box col-sm-5">
+                            <div class="product-img-box-wrapper">
+                                <div class="product-img-wrapper">
+                                    <img id="product-zoom" ng-init="mainPicture='/Assets/img/products/@Model.Product.ProductPictures.First().PicturePath'" src="{{mainPicture}}" data-zoom-image="{{mainPicture}}" alt="Product main image">
+                                </div>
+
+                                <a href="#" class="product-img-zoom" title="Zoom">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </a>
+                            </div>
+
+                            <div class="owl-carousel manual" id="productGalleryThumbs">
+                                @foreach (var picture in Model.Product.ProductPictures)
+                                {
+                                    <div class="product-img-wrapper">
+                                        <a href="#" ng-model="selectedPicture" ng-click="SelectPicture('@picture.PicturePath')" data-image="~/Assets/img/products/@picture.PicturePath" data-zoom-image="~/Assets/img/products/@picture.PicturePath" class="product-gallery-item">
+                                            <img class="img" src="~/Assets/img/products/@picture.PicturePath" alt="product">
+                                        </a>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="product-details-box col-sm-7">
+
+                            <h1 class="product-name">
+                                @Model.Product.ProductModel.Make.MakeName @Model.Product.ProductModel.ModelName - @Model.Product.ProductName
+                            </h1>
+
+                            <div class="product-detail-info">
+                                <div class="product-price-box">
+                                    @{  if (Model.CampaignList.Count != 0)
+                                        {
+                                            <span class="old-price">@Model.Product.UnitPrice.ToString("C")</span>
+                                            var totalPrice = Model.Product.UnitPrice;
+                                            foreach (var campaign in Model.CampaignList.Where(x => x.IsActive = true && x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now))
+                                            {
+                                                totalPrice = totalPrice * (1 - campaign.Discount);
+                                            }
+
+                                            <span class="product-price">@totalPrice.ToString("C")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="product-price">@Model.Product.UnitPrice.ToString("C")</span>
+                                        }
+
+                                    }
+
+                                </div>
+                                <p class="availability">
+                                    <span class="font-weight-semibold">Stok:</span>
+                                    @{
+                                        if (Model.Product.UnitsInStock > 0)
+                                        {
+                                            <label>Var</label>
+                                        }
+                                        else
+                                        {
+                                            <label style="color:rgba(152, 14, 14, 0.93)">Yok</label>
+                                        }
+                                    }
+                                </p>
+                            </div>
+
+                            <div class="product-detail-options">
+                                <div>
+                                    @* Product Modelindeki Diğer Productlar *@
+                                    <ul class="">
+                                        @foreach (var p in Model.ProductList)
+                                        {
+                                            if (p.ProductID != Model.Product.ProductID)
+                                            {
+                                                var id = @p.ProductID;
+                                                <li ng-mouseover="listStyle={'box-shadow':'1px 1px 1px rgba(38, 38, 38, 0.44)'}" ng-mouseleave="listStyle={'box-shadow':'0'}" ng-style="listStyle" style="display:inline-block;background-color: #0088cc;" class="otherProduct">
+                                                    <a href="/Product/ProductDetail/@p.ProductID">
+                                                        <div class="testimonial-author">
+                                                            <div class="testimonial-author-thumbnail img-thumbnail" style="overflow:hidden">
+                                                                <img src="~/Assets/img/products/@p.ProductPictures.First().PicturePath" style="height:60px;width:80px;" alt="">
+                                                                <p style="margin:3px 0px"><strong>@p.ProductName</strong></p>
+                                                                <p class="product-price-box">
+                                                                    @{  if (Model.CampaignList.Count != 0)
+                                                                        {
+                                                                            var totalPrice = Model.Product.UnitPrice;
+                                                                            foreach (var campaign in Model.CampaignList.Where(x => x.IsActive = true && x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now))
+                                                                            {
+                                                                                totalPrice = totalPrice * (1 - campaign.Discount);
+                                                                            }
+
+                                                                            <span class="product-price">@totalPrice.ToString("C")</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span class="product-price">@Model.Product.UnitPrice</span>
+                                                                        }
+
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                                            }
+                                                                        }
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <div class="product-actions">
+
+                                @{
+                                    if (Model.Product.UnitsInStock > 0)
+                                    {
+                                        <div class="product-detail-qty">
+                                            <input type="text" value="1" class="vertical-spinner" id="product-vqty" maxlength="@Model.Product.UnitsInStock">
+                                        </div>
+                                        <a href="#" class="addtocart" id="@Model.Product.ProductID" title="Add to Cart">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span>Add to Cart</span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <div class="product-detail-qty">
+                                            <input type="text" value="0" class="vertical-spinner" id="product-vqty" maxlength="0">
+                                        </div>
+                                        <a href="" class="addtocart" id="@Model.Product.ProductID" title="Add to Cart" ng-click="Error('@true')">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span>Add to Cart</span>
+                                        </a>
+                                    }
+                                }
+
+                            </div>
+
+                            <div class="product-share-box">
+                                <div class="addthis_inline_share_toolbox"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* Urun ozellikleri ve yorumlar *@
+                <div class="tabs row product-tabs ">
+                    <ul class="nav nav-tabs ">
+                        <li class="active" style="display:inline-block">
+                            <a href="#product-property" data-toggle="tab">Özellikler</a>
+                        </li>
+                        <li style="display:inline-block">
+                            <a href="#product-comment" data-toggle="tab">Yorumlar</a>
+                        </li>
+                    </ul>
+
+                    @* icerik *@
+                    <div class="tab-content">
+                        @*Ueun ozellikleri*@
+                        <div id="product-property" class="tab-pane active">
+                            <table class="product-table">
+                                <tbody>
+                                    @foreach (var pValue in Model.Product.ProductTechnicProperties)
+                                    {
+                                        <tr>
+                                            <td class="table-label">@pValue.Property.PropertyName</td>
+                                            <td>@pValue.PropertyValue</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        @* Yorumlar *@
+                        <div id="product-comment" ng-model="commentDiv" class="tab-pane row">
+                            <div class="product-desc-area">
+
+                                <div class="col-md-8 col-md-offset-2 animate-show animate-hide" ng-repeat="comment in commentList">
+                                    <div class="col-md-11 testimonial testimonial-style-3">
+                                        <blockquote>
+                                            <p>{{comment.Content}}</p>
+                                        </blockquote>
+                                        <div class="testimonial-arrow-down"></div>
+                                        <div class="testimonial-author">
+                                            <p><strong>{{comment.FullName}}</strong><span>@DateTime.Now </span></p>
+                                        </div>
+                                    </div>
+                                    @if (Session["user"] != null)
+                                    {
+                                        <button type="button" class="close" ng-click="DeteleCommentNew(comment.ProductCommentID,$index)" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    }
+                                </div>
+
+                                @{
+                                    foreach (var item in Model.Product.ProductComments.OrderByDescending(x => x.CreatedDate).Take(5))
+                                    {
+                                        <div>
+
+                                            <div class="col-md-8 col-md-offset-2 animate-show animate-hide">
+
+                                                <div class="col-md-11 testimonial testimonial-style-3">
+
+                                                    <blockquote>
+                                                        <p>@item.Content</p>
+                                                    </blockquote>
+                                                    <div class="testimonial-arrow-down"></div>
+                                                    <div class="testimonial-author">
+                                                        <p><strong>@item.User.FullName</strong><span>@item.CreatedDate</span></p>
+                                                    </div>
+                                                </div>
+                                                @if (Session["user"] != null && item.User.FullName == ((User)Session["user"]).FullName)
+                                                {
+                                                    <button type="button" class="close" ng-click="DeteleCommentOld('@item.ProductCommentID',$event)" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div ng-show="AllComment">
+                                        @foreach (var item in Model.Product.ProductComments.OrderByDescending(x => x.CreatedDate).Skip(5))
+                                        {
+                                            <div class="col-md-8 col-md-offset-2 row animate-show animate-hide">
+                                                <div class="col-md-11 testimonial testimonial-style-3 ">
+
+                                                    <blockquote>
+
+                                                        <p>@item.Content</p>
+                                                    </blockquote>
+                                                    <div class="testimonial-arrow-down"></div>
+                                                    <div class="testimonial-author">
+                                                        <p><strong>@item.User.FullName</strong><span>@item.CreatedDate</span></p>
+                                                    </div>
+                                                </div>
+                                                @if (Session["user"] != null && item.User.FullName == ((User)Session["user"]).FullName)
+                                                {
+                                                    <button type="button" class="close" ng-click="DeteleCommentOld('@item.ProductCommentID',$event)" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                }
+                                            </div>
+                                        }
+
+                                    </div>
+                                    if (Model.Product.ProductComments.Count > 5)
+                                    {
+                                        <div class="col-md-2 col-md-offset-5" ng-model="getCommentButton">
+                                            <input type="button" style="margin:10px 0px;" class="btn btn-success" name="name" ng-click="AllComment=!AllComment" value="Diğer Yorumlar" />
+                                        </div>
+                                    }
+                                    else if (Model.Product.ProductComments.Count == 0)
+                                    {
+                                        <div class="col-md-4 col-md-offset-4">
+                                            <h3 style="color:rgba(118, 118, 118, 0.90);margin:20px 0px;"> Henüz Bu Ürüne Yorum Yapılmadı..</h3>
+                                        </div>
+                                    }
+                                }
+                                @if (Session["user"] != null)
+                                {
+                                    <div class="col-md-11 col-lg-offset-1">
+
+                                        <div class="input-group mb-md " style="height:auto">
+                                            <textarea class="form-control" ng-model="commentText" style="min-height:90px;max-height:90px;"></textarea>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-success" style="height:auto" ng-click="SendComment(commentText,'@Model.Product.ProductID')" type="button">Gönder</button>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="slider-title">
+                <span class="inline-title">Benzer Ürünler</span>
+                <span class="line"></span>
+            </h2>
+
+            @* Benzer Diğer Ürünler *@
+            <div class="owl-carousel owl-theme" data-plugin-options='{"items":4, "margin":20, "nav":true, "dots": false, "loop": false}'>
+
+                @{
+                    foreach (var pModel in Model.SubModelList.Where(x => x.ModelID != Model.Product.ProductModel.ModelID))
+                    {
+                        if (pModel.Products.Count != 0)
+                        {
+
+
+                            <div class="product">
+                                <figure class="product-image-area">
+                                    <a href="/Product/ProductDetail/@pModel.Products.First().ProductID" title="Product Name" class="product-image">
+                                        <img src="/Assets/img/products/@pModel.Products.First().ProductPictures.First().PicturePath" alt="Product Name">
+                                        @*<img src="/Assets/img/products/@pModel.Products.First().ProductPictures.First().PicturePath" alt="Product Name" class="product-hover-image">*@
+                                    </a>
+
+                                    <a class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@pModel.Products.First().ProductID">
+                                        <i class="fa fa-share-square-o"></i>
+                                        <span>Quick View</span>
+                                    </a>
+                                    @* İndirim Miktarı (Varsa) *@
+                                    @{
+                                        if (pModel.Products.First().Campaigns.Count != 0)
+                                        {
+                                            var totalDiscount = "";
+                                            var count = pModel.Products.First().Campaigns.Count;
+                                            foreach (var campaign in pModel.Products.First().Campaigns.Where(x=>x.IsActive=true&& x.EndingDate>DateTime.Now&&x.StartedDate<DateTime.Now))
+                                            {
+                                                totalDiscount = totalDiscount + "%" + (Convert.ToUInt32(campaign.Discount * 100)).ToString();
+                                                if (count > 1)
+                                                {
+                                                    totalDiscount = totalDiscount + "+";
+                                                    count--;
+                                                }
+                                            }
+
+                                            <div class="product-label">
+                                                <span class="discount">
+                                                    @totalDiscount İndirim Fırsatıyla
+                                                </span>
+                                            </div>
+                                        }
+                                    }
+                                </figure>
+                                <div class="product-details-area">
+                                    @* Urun Adı *@
+                                    <h2 class="product-name"><a href="/Product/ProductDetail/@pModel.Products.First().ProductID" title="Product Name">@pModel.ModelName -@pModel.Products.First().ProductName</a></h2>
+
+                                    <div class="product-price-box">
+                                        @{  if (pModel.Products.First().Campaigns.Count != 0)
+                                            {
+                                                <div class="product-ratings">
+                                                    <span class="old-price">@pModel.Products.First().UnitPrice.ToString("C")</span>
+                                                </div>
+                                                var totalPrice = pModel.Products.First().UnitPrice;
+                                                foreach (var campaign in pModel.Products.First().Campaigns.Where(x => x.IsActive = true && x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now))
+                                                {
+                                                    totalPrice = totalPrice * (1 - campaign.Discount);
+                                                }
+
+                                                <span class="product-price">@totalPrice.ToString("C")</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="product-price">@pModel.Products.First().UnitPrice</span>
+                                            }
+
+                                        }
+
+                                    </div>
+
+                                    <div class="product-actions">
+
+                                        <a href="#" class="addtocart" title="Add to Cart" id="@pModel.Products.First().ProductID">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span>Add to Cart</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                                                }
+                                            }
+                }
+
+
+
+            </div>
+        </div>
+
+    </div>
+    <div class="modal" id="quickViewModal" tabindex="-1" role="dialog" aria-labelledby="quickViewModalLabel" aria-hidden="true"></div>
+                                            }
+<script>
+
+
+
+   // var app = angular.module("productDetailApp", []);
+   
+
+</script>

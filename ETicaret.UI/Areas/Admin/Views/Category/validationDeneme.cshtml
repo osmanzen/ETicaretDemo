@@ -1,0 +1,117 @@
+﻿@using ETicaret.UI.Areas.Admin.Models.DTO
+@model  VMCategory
+
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="content-header">
+
+    <p>
+        Kategori Ekle
+    </p>
+
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Layout</a></li>
+        <li class="active">Fixed</li>
+    </ol>
+</section>
+<section class="content" ng-app="myApp" ng-controller="myCont">
+    <div class="row">
+        @using (Html.BeginForm("Add", "Category", FormMethod.Post, new { Name = "form", @novalidate = "", @ng_submit = "formSubmit($event)" }))
+        {
+
+
+            <div class="box">
+                <div class="box-body col-md-6 col-md-offset-3">
+
+                    <div class="form-group  {{(form.$submitted || form.SubCategoryID.$touched) && cID==null ? 'has-error' : '' }}">
+                        @Html.Label("Üst Kategori")
+                        @Html.DropDownList("CategoryID", new SelectList(Model.Categories.Select(x => new { Value = x.CategoryID, Text = x.CategoryName }), "Value", "Text"), "Seçiniz", new { @class = "form-control category categoryTop", @ng_model = "cID", @ng_change = "GetSubCategories(cID,-1)", @ng_attr_name = "{{SubNameIndex==0 ? 'SubCategoryID' : ''}}", @required = "" })
+                        <span ng-show="(form.$submitted || form.SubCategoryID.$touched) && cID==null" class="help-block">Boş geçilemez!</span>
+                    </div>
+
+                    <div class="form-group {{(form.$submitted || form.SubCategoryID.$touched) && catDivs.cID[$index]==null ? 'has-error' : '' }}" ng-repeat="div in catDivs">
+                        @Html.Label("Alt Kategori")
+                        <select class="form-control" ng-attr-name="{{$index+1==SubNameIndex ? 'SubCategoryID' : ''}}" ng-change="GetSubCategories(catDivs.cID[$index],$index)" ng-model="catDivs.cID[$index]" required="">
+                            <option value="">Seçiniz</option>
+                            <option ng-repeat="option in div.categories" value="{{option.CategoryID}}">{{option.CategoryName}}</option>
+                        </select>
+                        <span ng-show="(form.$submitted || form.SubCategoryID.$touched) && catDivs.cID[$index]==null" class="help-block">Boş geçilemez!</span>
+                    </div>
+
+                    <div class="form-group {{(form.$submitted || form.CategoryName.$touched) &&  form.CategoryName.$error.required ? 'has-error' : '' }}">
+                        @Html.Label("Kategori Adı")
+                        @Html.TextBoxFor(x => x.Category.CategoryName, new { @class = "form-control", Name = "CategoryName", @required = "", @ng_model = "cat.name", @ng_change = "nameControl()" })
+                        <span ng-show="(form.$submitted || form.CategoryName.$touched) && form.CategoryName.$error.required" class="help-block">Boş geçilemez!</span>
+                    </div>
+                    <div class="form-group {{(form.$submitted || form.Description.$touched) &&  form.Description.$error.required ? 'has-error' : '' }}">
+                        @Html.Label("Açıklama")
+                        @Html.TextBoxFor(x => x.Category.Description, new { @class = "form-control", Name = "Description", @required = "", @ng_model = "cat.desc" })
+                        <span ng-show="(form.$submitted || form.Description.$touched) && form.Description.$error.required" class="help-block">Boş geçilemez!</span>
+                    </div>
+                    <div>
+                        <input ng-disabled="form.$invalid || !form.SubCategoryID.$touched" class="btn btn-primary" type="submit" name="" value="Ekle" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+
+
+
+<script>
+
+    var app = angular.module('myApp', []);
+
+    app.controller('myCont', function ($scope, $http) {
+
+
+
+        $scope.SubNameIndex = 0;
+        $scope.catDivs = [];
+
+        $scope.GetSubCategories = function (id, index) {
+
+            $scope.SubNameIndex = index + 1;
+
+            $scope.catDivs.splice(index + 1, $scope.catDivs.length - index - 1);
+
+            if (id == '' || id == null)
+                return;
+
+            $http({
+                method: 'get',
+                url: '/Admin/Category/GetSubCategoriesJson/' + id
+            }).then(function succ(res) {
+                if (res.data.length != 0) {
+                    $scope.catDivs.push({ categories: res.data });
+                    $scope.SubNameIndex++;
+                }
+
+            });
+        };
+
+        $scope.nameControl=function () {
+            $scope.cat.name
+        };
+
+        $scope.formSubmit = function ($event) {
+            // our function body
+            if ($scope.form.$valid) {
+                //alert çıkartılabilir :)
+            }
+            else{
+                $event.preventDefault();
+            }
+        }
+
+
+    });
+
+
+</script>

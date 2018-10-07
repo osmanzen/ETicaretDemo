@@ -1,0 +1,54 @@
+﻿@model ICollection<UserAddress>
+@{
+    ViewBag.Title = "UserAddress";
+    Layout = "~/Views/Shared/_UserDetail.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        @if (Model.Count > 0)
+        {
+            if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success fade in alert-dismissable" style="margin-top:18px;">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                    @TempData["Success"]
+                </div> }
+
+            <div class="heading heading-border heading-middle-border heading-middle-border-center">
+                <h1 class="h2 heading-primary font-weight-normal">Adreslerim</h1>
+            </div>
+            foreach (var address in Model)
+            {
+                <div class="col-sm-6">
+                    <div class="panel-box">
+                        <div class="panel-box-title">
+                            <h3>@address.AddressFullName</h3>
+                            <a data-toggle="modal" data-target="#editAddressModal" data-whatever="@address.UserAddressID" class="panel-box-edit">Düzenle</a>
+                        </div>
+
+                        <div class="panel-box-content">
+                            <p>
+                                @address.Address <br>
+                                @address.District.DistrictName / @address.District.City.CityName<br>
+                                <a href="/UserDetail/RemoveAddress/@address.UserAddressID">Sil</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="heading heading-border heading-middle-border heading-middle-border-center">
+                <h3>Kayıtlı Adresiniz Bulunmamaktadır.</h3>
+            </div>
+        }
+        <div class="col-md-12">
+            <a data-toggle="modal" data-target="#editAddressModal" data-whatever="new" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-plus"></i>Yeni Adres</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true"></div>

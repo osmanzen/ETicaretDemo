@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+
+<div role="main" class="main">
+    <div role="main" class="main">
+        <div class="container main-container">
+            <div class="wrapper-container">
+                <div class="cart">
+                    <h1 class="h2 heading-primary mt-sm clearfix">
+                        <span>Alışveriş Sepeti</span>
+                    </h1>
+                    @if (TempData["OutStockError"] != null)
+            {
+                List<Product> outOrders = TempData["OutStockError"] as List<Product>;
+                foreach (var item in outOrders)
+                {
+                            <div class="alert alert-danger fade in alert-dismissable">
+                                <a class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                                <strong>Uyarı!</strong>@item.ProductModel.Make.MakeName @item.ProductModel.ModelName @item.ProductName isimli ürün için verilen sipariş miktarı şuanda temin edilemiyor. Stok Miktarı: @item.UnitsInStock
+                            </div>
+                        }
+                    }
+                    <div class="container" id="cartDetailIndex">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("#cartDetailIndex").ready(function () {
+            getCartIndex();
+        });
+
+        function ClearCart(productId) {
+            $.ajax({
+                type: "POST",
+                url: "/Cart/ClearCart",
+                data: { id: productId },
+                dataType: "json",
+                success: function (response) {
+                    getCartDropdown();
+                },
+                failure: function (response) {
+                    alert("Temizlenemedi");
+                },
+                error: function (response) {
+                    alert("Hata Oluştu");
+                }
+            });
+        }
+
+        function getCartDropdown() {
+            $.ajax({
+                type: "POST",
+                url: "/Cart/CartDropDown",
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    var dropdown = $('.cart-dropdown');
+                    dropdown.empty();
+                    dropdown.html(response);
+                    getCartIndex();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    </script>
+}

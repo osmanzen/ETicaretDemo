@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+@RenderSection("styles", required: false)
+
+<div role="main" class="main">
+    <div class="container main-container">
+        <div class="wrapper-container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9 col-md-push-3 my-account form-section">
+                        @RenderBody()
+                    </div>
+                    <div class="col-md-3 col-md-pull-9">
+                        <aside class="sidebar">
+                            <ul class="nav nav-list">
+                                <li><a href="~/UserDetail/Index">Siparişlerim</a></li>
+                                <li><a href="~/UserDetail/UserAddress">Adres Defteri</a></li>
+                                <li><a href="~/UserDetail/UserCards">Kartlarım</a></li>
+                                <li><a href="~/UserDetail/EditProfile">Hesap Ayarları</a></li>
+                            </ul>
+
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

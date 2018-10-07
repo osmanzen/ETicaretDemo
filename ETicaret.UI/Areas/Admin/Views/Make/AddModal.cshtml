@@ -1,0 +1,102 @@
+﻿
+@model ETicaret.UI.Areas.Admin.Models.DTO.VMMakeModal
+
+@*<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>*@
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Marka Ekle</h4>
+        </div>
+        <div class="modal-body">
+            <p>Kategori: <b>@Model.Category.CategoryName</b></p> @* , Selected = (x.CategoryID == Model.Category.CategoryID)  *@
+            <div class="form-group">
+                @Html.LabelFor(x => x.Category.CategoryName)
+                @Html.DropDownList("CategoryID", Model.Categories.Select(x => new SelectListItem { Value = x.CategoryID.ToString(), Text = x.CategoryName, Selected = (x.CategoryID == Model.Category.CategoryID) }), new { @class = "form-control", multiple = "multiple" })
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.MakeName)
+                @Html.TextBoxFor(x => x.MakeName, new { @class = "form-control" })
+            </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">İptal</button>
+            <button type="button" id="addMake" class="btn btn-primary">Ekle</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<script>
+
+    ///Açılan modalda seçilen kategorileri tıladıkça yakalıyor ve Kategori: karşısına araya virgüller koyarak yazırıyor.
+    $('#makeModal select#CategoryID').change(function () {
+        $('#makeModal p b').html(''); //Sectiği kategoriler değişmiş olabilir o yüzden önce içini boşaltıyoruz ,
+                                            //sonra seçili olan tüm optionları yakalayıp yeniden ekliyoruz
+        $('#makeModal #CategoryID option:selected').each(function () { //Each in içine data yollamadık çünkü döneceği data ile each çağırılıyor zaten:)
+            $('#makeModal p b').append($(this).text()+', ');
+        });
+        $('#makeModal p b').html($('#makeModal p b').html().slice(0, -2)); //Sondaki virgül ve boşluk karkterlerini silmemiz gerekiyor(sadece görüntü açısından post ettiğimiz de bilgileri oradan okumuyoruz zaten:)
+    });
+
+    setTimeout(
+        function () {
+            console.log(parseInt($('#makeModal select#CategoryID').prop('scrollHeight')));
+            console.log(parseInt($('#makeModal select#CategoryID option').length));
+            console.log(parseInt($('#makeModal select#CategoryID option:selected').index() - 1));
+            var scrollPosition = parseInt( $('#makeModal select#CategoryID').prop('scrollHeight')) / parseInt($('#makeModal select#CategoryID option').length) * parseInt($('#makeModal select#CategoryID option:selected').index()-1);
+            console.log(scrollPosition);
+            $('#makeModal select#CategoryID').scrollTop(scrollPosition);
+        }, 1000);
+
+
+
+
+    $('#addMake').click(function () {
+        //alert('boş');
+
+        var selectedValues = $('#makeModal #CategoryID').val();
+        //console.log(selectedValues);
+
+        var data = {
+            CategoryList: selectedValues,
+            MakeName: $('#makeModal #MakeName').val()
+
+        };
+
+        $.ajax({
+            url: '/Admin/Make/AddModal',
+            data: data,
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (result) {
+                console.log(result);
+                if (result == true) {
+                    $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageSuccess.cshtml")');
+                    $('#modalSuccess').modal('show');
+                    $('#makeModal').modal('hide');
+
+                    $("form select#CategoryID").trigger("change");
+
+                }
+                else {
+                    $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageError.cshtml")');
+                    $('#modalError').modal('show');
+                    $('#makeModal').modal('hide');
+                }
+
+            }
+        });
+
+    });
+</script>

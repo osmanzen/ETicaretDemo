@@ -1,0 +1,408 @@
+﻿@model ETicaret.UI.Areas.Admin.Models.DTO.VMProduct
+
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<script type="text/javascript" src="https://cdn.rawgit.com/adonespitogo/angular-base64-upload/master/src/angular-base64-upload.js"></script>
+
+<section class="content-header">
+    <h2>Add</h2>
+
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Layout</a></li>
+        <li class="active">Fixed</li>
+    </ol>
+</section>
+
+<section class="content" ng-app="myApp" ng-controller="myCont">
+    <div class="row">
+        @using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", Name = "form", @ng_submit = "formSubmit($event)" }))
+        {
+
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#infosection" data-toggle="tab" aria-expanded="true">Bilgiler</a></li>
+                    <li class=""><a href="#picturesection" data-toggle="tab" aria-expanded="false">Resimler</a></li>
+                    <li class=""><a href="#propertysection" data-toggle="tab" aria-expanded="false" @*onclick="angular.element(this).scope().getProperties()"*@>Özellikler</a></li>
+                </ul>
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="infosection">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group {{(form.$submitted || form.CategoryID.$touched) && (cID==null || cID=='') ? 'has-error' : ''}}">
+                                    @Html.LabelFor(x => x.Categories)
+                                    @Html.DropDownList("CategoryID", new SelectList(Model.Categories.Select(x => new { Value = x.CategoryID, Text = x.CategoryName }), "Value", "Text"), "Seçiniz", new { @class = "form-control", @ng_change = "GetSubCategories(cID,-1)", @ng_model = "cID", @required = "", Name = "{{cDivIndex==0 ? 'CategoryID' : ''}}" })
+                                    <span ng-show="(form.$submitted || form.CategoryID.$touched) && (cID==null || cID=='')" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+                                <div class="form-group {{(form.$submitted || form.CategoryID.$touched) && (cDivs.subC[$index]==null || cDivs.subC[$index]=='') ? 'has-error' : '' }}" ng-repeat="div in cDivs">
+                                    <label>Alt Kategoriler</label>
+                                    <select id="CategoryID" name="{{cDivIndex==$index+1 ? 'CategoryID' : ''}}" ng-model="cDivs.subC[$index]" ng-change="GetSubCategories(cDivs.subC[$index],$index)" class="form-control" required>
+                                        <option value="">Seçiniz</option>
+                                        <option ng-repeat="option in div.categories" value="{{option.CategoryID}}">{{option.CategoryName}}</option>
+                                    </select>
+                                    <span ng-show="(form.$submitted || form.CategoryID.$touched) && (cDivs.subC[$index]==null || cDivs.subC[$index]=='')" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+
+                                <div class="form-group {{(form.$submitted || form.MakeID.$touched) && (makeDivs.makeid==null || makeDivs.makeid=='') ? 'has-error' : '' }}" ng-repeat="div in makeDivs">
+                                    <label>Markalar</label>
+                                    <select id="MakeID" name="MakeID" ng-model="makeDivs.makeid" ng-change="changeMake()" required class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option ng-repeat="option in div.makes" value="{{option.MakeID}}">{{option.MakeName}}</option>
+                                    </select>
+                                    <span ng-show="(form.$submitted || form.MakeID.$touched) && (makeDivs.makeid==null || makeDivs.makeid=='')" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+
+                                <div class="form-group {{(form.$submitted || form.ModelID.$touched) && (modelDivs.modelid==null || modelDivs.modelid=='') ? 'has-error' : '' }}" ng-repeat="div in modelDivs">
+                                    <label>Modeller</label>
+                                    <select name="ModelID" ng-model="modelDivs.modelid" class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option ng-repeat="option in div.models" value="{{option.ModelID}}">{{option.ModelName}}</option>
+                                    </select>
+                                    <span ng-show="(form.$submitted || form.ModelID.$touched) && (modelDivs.modelid==null || modelDivs.modelid=='')" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group {{(form.$submitted || form.ProductName.$touched) &&  form.ProductName.$error.required ? 'has-error' : '' }}">
+                                    @Html.LabelFor(x => x.ProductName)
+                                    @Html.TextBoxFor(x => x.ProductName, new { @class = "form-control", @required = "", @ng_model = "productname" })
+                                    <span ng-show="(form.$submitted || form.ProductName.$touched) && form.ProductName.$error.required" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+                                <div class="form-group {{(form.$submitted || form.UnitPrice.$touched) &&  form.UnitPrice.$error.required ? 'has-error' : '' }}">
+                                    @Html.LabelFor(x => x.UnitPrice)
+                                    @Html.TextBoxFor(x => x.UnitPrice, new { @class = "form-control", @required = "", @ng_model = "unitprice" })
+                                    <span ng-show="(form.$submitted || form.UnitPrice.$touched) && form.UnitPrice.$error.required" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+
+
+                                <div class="form-group {{(form.$submitted || form.UnitsInStock.$touched) &&  form.UnitsInStock.$error.required ? 'has-error' : '' }}">
+                                    @Html.LabelFor(x => x.UnitsInStock)
+                                    @Html.TextBoxFor(x => x.UnitsInStock, new { @class = "form-control", @required = "", @ng_model = "unirinstock" })
+                                    <span ng-show="(form.$submitted || form.UnitsInStock.$touched) && form.UnitsInStock.$error.required" class="help-block">Boş geçilemez!</span>
+                                </div>
+
+                                <div class="form-group {{(form.$submitted || form.Description.$touched) &&  form.Description.$error.required ? 'has-error' : '' }}">
+                                    @Html.LabelFor(x => x.Description)
+                                    @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @required = "", @ng_model = "description" })
+                                    <span ng-show="(form.$submitted || form.Description.$touched) && form.Description.$error.required" class="help-block">Boş geçilemez!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="picturesection">
+                        <div class="row">
+
+                            <div class="col-md-3 form-group" ng-repeat="div in picDivs">
+                                <label for="choseFile{{$index}}"><img ng-init="picDivs.url1[$index]='/Areas/Admin/Assets/img/add-file.png'" height="200" width="200" ng-src="{{picDivs.url1[$index]}}" alt="Alternate Text" /></label>
+                                <input type="file" id="choseFile{{$index}}" ng-model="picDivs.url[$index]" ng-change="encode($index)" style="display:none;" name="Picture" base-sixty-four-input accept="image/*">
+                            </div>
+
+
+
+
+
+                            <button type="submit" class="btn btn-info" style="float:right;margin-right:10px;">İleri <i class="fa fa-arrow-right"></i></button>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane" id="propertysection">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" ng-repeat="div in propDivs">
+                                    <label>{{div.PropertyName}}</label>
+                                    <input type="text" name="{{div.PropertyID}}" value="" class="form-control" />
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <style>
+                                    input.es-input {
+                                        padding-right: 20px !important;
+                                    }
+
+                                        input.es-input:focus + .es-list {
+                                            display: block;
+                                        }
+
+                                    .es-list:hover {
+                                        display: block;
+                                    }
+
+                                    input.es-input2 {
+                                        position: absolute;
+                                        right: 15px;
+                                        top: 25px;
+                                    }
+
+                                    .es-list {
+                                        padding: 0;
+                                        margin: 0;
+                                        border: 1px solid #d1d1d1;
+                                        display: none;
+                                        z-index: 1000;
+                                        background: #fff;
+                                        max-height: 160px;
+                                        overflow-y: auto;
+                                        -moz-box-shadow: 0 2px 3px #ccc;
+                                        -webkit-box-shadow: 0 2px 3px #ccc;
+                                        box-shadow: 0 2px 3px #ccc;
+                                    }
+
+                                        .es-list li {
+                                            cursor: default;
+                                            display: block;
+                                            padding: 5px 10px;
+                                            margin: 0;
+                                        }
+
+                                            .es-list li:hover {
+                                                background-color: skyblue;
+                                            }
+                                </style>
+
+                                <div id="no-filtering-place" data-filter="false">
+                                    <label for="propertyname">Yeni Özellik</label>
+                                    <input type="button" class="btn btn-success es-input2" name="" value="Yeni" ng-click="addProperty()" />
+                                    <input type="text" id="propertyname" autocomplete="off" class="form-control es-input" ng-change="getPropertiesByName()" value="{{selectProperty}}" ng-model="newPropertyName">
+                                    <ul class="es-list">
+                                        <li class="es-visible selected" ng-repeat="li in propLi" ng-click="selectPropertyChange(li.PropertyName);">{{li.PropertyName}}</li>
+                                    </ul>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<div class="modal fade" id="categoryModal">
+</div>
+
+<div class="modal fade" id="makeModal">
+</div>
+
+<div class="context-category">
+    @Html.Partial("/Areas/Admin/Views/Category/ContextMenu.cshtml") @*Ajax ile çağırıyordum bu şekil daha iyi*@
+</div>
+
+<div class="context-make">
+    @Html.Partial("/Areas/Admin/Views/Make/ContextMenu.cshtml")
+</div>
+
+<div class="context-model">
+
+</div>
+
+
+<script>
+
+
+    var app = angular.module('myApp', ['naif.base64']);
+    app.controller('myCont', function ($scope, $http, $window, $rootScope) {
+
+        $scope.cDivIndex = 0;
+
+        $scope.cDivs = [];
+        $scope.makeDivs = [];
+        $scope.modelDivs = [];
+        //$scope.cDivs.subC = true;
+
+        $scope.GetSubCategories = function (id, index) {
+            $scope.cDivIndex = index + 1;
+            if (index == -1)
+                $scope.cDivs = [];
+            else
+                $scope.cDivs.splice(index + 1, $scope.cDivs.length - index);
+            $scope.makeDivs = [];
+            $scope.modelDivs = [];
+            if (id == "" || id == null)
+                return;
+
+            $http({
+                method: 'get',
+                url: '/Admin/Category/GetSubCategoriesJson/' + id
+            }).then(function succ(response) {
+                if (response.data.length != 0) {
+                    $scope.cDivs.push({ categories: response.data });
+                    $scope.cDivIndex++;
+                }
+                else {
+                    $scope.GetMakesByCategory(id);
+                    setTimeout(function () {
+                        $scope.getProperties();
+                    }, 1000);
+                }
+            }, function err(response) {
+                console.log(response);
+            });
+        };
+
+        $scope.GetMakesByCategory = function (id) {
+
+            if (id == "")
+                return;
+
+            $http({
+                method: 'get',
+                url: '/Admin/Make/GetMakesByCategory/' + id
+            }).then(function succ(response) {
+                $scope.makeDivs.push({ makes: response.data });
+            }, function err(response) {
+
+            });
+        };
+
+        $scope.changeMake = function () {
+            $scope.modelDivs = [];
+
+            var categoryid;
+            if ($scope.cDivs.length == 0) {
+                categoryid = $scope.cID;
+            } else {
+                categoryid = $scope.cDivs.subC[$scope.cDivs.length - 1];
+                //alert($scope.cDivs.subC[$scope.cDivs.length - 1]);
+            }
+
+            $scope.GetModelsByMakeAndCategory($scope.makeDivs.makeid, categoryid);
+        };
+
+
+
+        $scope.GetModelsByMakeAndCategory = function (makeid, categoryid) {
+            if (makeid == "" || categoryid == "" || makeid == null)
+                return;
+
+            $http({
+                method: 'post',
+                url: '/Admin/ProductModel/GetModelsByMakeAndCategory',
+                data: { CategoryID: categoryid, MakeID: makeid }
+            }).then(function succ(response) {
+                console.log(response.data);
+                $scope.modelDivs.push({ models: response.data });
+            }, function err(response) {
+
+            });
+        };
+
+        $scope.picDivs = [{ aa: 'b' }];
+
+        $scope.encode = function (e) {
+            console.log(e);
+
+            $scope.picDivs.url1[e] = 'data:image/png;base64,' + $scope.picDivs.url[e].base64;
+            if (e + 1 == $scope.picDivs.length)
+                $scope.picDivs.push({ a: 'b' });
+        };
+
+
+
+        $scope.getProperties = function () {
+            var a = $scope.cDivs.length - 1;
+
+            if (a < 0)
+                $scope.GetPropertiesByCategory($scope.cID);
+
+            if (a >= 0)
+                $scope.GetPropertiesByCategory($scope.cDivs.subC[a]);
+        };
+
+        $scope.propDivs = [];
+
+        $scope.GetPropertiesByCategory = function (id) {
+            if (id == null)
+                return;
+
+            $http({
+                method: 'get',
+                url: '/Admin/Property/GetPropertiesByCategory/' + id
+            }).then(function succ(response) {
+                console.log(response.data);
+                if (response.data.length != 0)
+                    $scope.propDivs = response.data;
+                else
+                    $scope.propDivs = [];
+            }, function err(response) {
+
+            });
+        };
+
+
+        $scope.addProperty = function () {
+            if ($scope.makeDivs.length == 0)
+                return;
+            var id;
+            if ($scope.cDivs.length != 0)
+                id = $scope.cDivs.subC[$scope.cDivs.length - 1];
+            else
+                id = $scope.cID;
+
+            $http({
+                method: 'post',
+                url: '/Admin/Property/Add',
+                data: { PropertyName: $scope.newPropertyName, CategoryID: id }
+            }).then(function succ(response) {
+                if (response.data != false) {
+                    $scope.propDivs.push({ PropertyName: response.data.PropertyName, PropertyID: response.data.PropertyID });
+                    $scope.newPropertyName = "";
+                }
+            });
+        };
+
+
+        $scope.getPropertiesByName = function () {
+            setTimeout(function () {
+                $http({
+                    method: 'get',
+                    url: '/Admin/Property/GetPropertiesByName/' + $scope.newPropertyName
+                }).then(function succ(res) {
+                    if (res.data.length != 0) {
+                        $scope.propLi = res.data;
+                        console.log(res.data);
+                    }
+                    else
+                        $scope.propLi = [];
+
+                });
+            }, 500);
+
+        };
+
+        $scope.selectPropertyChange = function (e) {
+            $scope.newPropertyName = e;
+            $scope.propLi = [];
+        };
+
+        $scope.formSubmit = function ($event) {
+            // our function body
+            if ($scope.form.$valid) {
+                //alert çıkartılabilir :)
+            }
+            else {
+                $event.preventDefault();
+            }
+        };
+    });
+</script>

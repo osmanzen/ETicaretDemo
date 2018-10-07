@@ -1,0 +1,103 @@
+﻿@model ETicaret.UI.Areas.Admin.Models.DTO.VMCampaignAdd
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<!-- daterange picker -->
+<link rel="stylesheet" href="~/Areas/Admin/Assets/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+<!-- bootstrap datepicker -->
+<link rel="stylesheet" href="~/Areas/Admin/Assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+<!-- Bootstrap time Picker -->
+<link rel="stylesheet" href="~/Areas/Admin/Assets/plugins/timepicker/bootstrap-timepicker.min.css">
+
+
+<section>
+    @using (Html.BeginForm("Add", "Campaign", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row" style="margin-top:100px">
+
+            <div class="col-xs-5 col-xs-offset-1">
+                <div class="form-group">
+                    @Html.LabelFor(x=>x.Campaign.Title ,"Kampanya Adı")
+                    @Html.TextBoxFor(x=>x.Campaign.Title)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x=>x.Campaign.StartedDate,"Başlangıç Tarihi")
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right datepicker" id="StartedDate" name="StartedDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Kampanya Süresi")
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                        <input type="number" class="form-control " id="EndingDate" name="EndingDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x=>x.Campaign.Discount,"İndirim Miktarı")
+                    @Html.TextBoxFor(x=>x.Campaign.Discount,new { @placeholder="0,"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Campaign.Status,"Kampanya Durumu")
+                    @Html.CheckBoxFor(x=>x.Campaign.Status)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Campaign.PictureUrl, "Kampanya Resmi")
+                    <input type="file" name="file" id="file" />
+                </div>
+                @Html.ActionLink("İptal", "Index", "Campaign", null, new { @class = "btn btn-default col-xs-4 col-xs-offset-2", style = "background-color:#e23d28f7;color:white" })
+                <input type="submit" class="btn btn-default col-xs-4 col-xs-offset-1" name="Kaydet" id="add" value="Kaydet" />
+            </div>
+            <div class="col-xs-5" >
+                
+                @Html.Label("Kampanya Uygulanacak Alanlar")
+                @Html.DropDownList("MakeID",new SelectList( Model.MakeList.Select(x=> new {Value=x.MakeID,Text=x.MakeName }),"Value","Text"),"Kampanya Markasını Seçiniz", new {@class = "form-control",id = "ddLimit" })
+                
+
+            </div>
+
+        </div>
+
+    }
+</section>
+
+<!-- bootstrap datepicker -->
+<script src="~/Areas/Admin/Assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- bootstrap color picker -->
+<script src="~/Areas/Admin/Assets/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="~/Areas/Admin/Assets/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script>
+    $(function () {
+
+        //Date picker
+        $('.datepicker').datepicker({
+            autoclose: true
+        })
+    })
+    var app = angular.module("campaignApp", []);
+    app.controller("campaignController", function ($scope, $http) {
+
+        var marka = $('form select#ddLimit option:selected').val();
+
+        //$scope.SelectLimit = function () {
+            
+        //    $http({
+        //        url: "/Admin/Campaign/CampaignProduct/" + marka,
+        //        type: 'GET'
+        //    }).then(function success(response)
+        //    {
+
+        //    });
+        //}
+
+
+    });
+    
+</script>

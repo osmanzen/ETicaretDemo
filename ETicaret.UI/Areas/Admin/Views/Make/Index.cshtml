@@ -1,0 +1,131 @@
+﻿*@model IEnumerable<ETicaret.Model.Models.Entity.Make>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<section class="content">
+
+    @using (Html.BeginForm("Index", "Make", FormMethod.Post))
+    {
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Hover Data Table</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+                    <table class="table">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.MakeName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Categories)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Models)
+                            </th>
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MakeName)
+                                </td>
+                                <td>
+                                    
+                                    @foreach (var cat in item.Categories)
+                                    {
+                                        @cat.CategoryName
+                                        <br />                                            
+                                    }
+
+                                </td>
+                                <td>
+                                    @foreach (var mod in item.Models)
+                                    {
+                                        @mod.ModelName
+                                        <br />
+                                    }
+
+                                </td>
+                                <td>
+                                    @Html.ActionLink(" ", "Edit", new { id = item.MakeID }, new { @data_id = item.MakeID, @class = "btn btn-default fa fa-pencil" }) |
+                                    @*@Html.ActionLink("Details", "Details", new { id = item.CategoryID }) |*@
+                                    @Html.ActionLink(" ", "Delete", new { id = item.MakeID }, new { @href = "javascript:;", @data_id = item.MakeID, @class = "delete btn btn-default fa fa-trash", style = "color:red" })
+
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <div class="modal fade" id="makeDeleteModal">
+
+    </div>
+
+    }
+</section>
+
+<script>
+    $('.delete').click(function () {
+        var data = $(this).attr('data-id');
+        $.ajax({
+            url: "/Admin/Make/DeleteModal/" + $(this).attr('data-id'),
+            type: 'GET',
+            success: function (page) {
+                $('#makeDeleteModal').html(page);
+                $('#makeDeleteModal').modal('show');
+
+                $('#edit').click(function () {
+
+                    $.ajax({
+                        url: "/Admin/Make/DeleteJson/" + data,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        success: function (result) {
+                            $('#makeDeleteModal').modal('hide');
+
+                            if (result == true) {
+                                $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageSuccess.cshtml")');
+                                $('#modalSuccess').modal('show');
+                                $('#modalSuccess .close').click(function () {
+
+                                    location.reload();
+                                });
+                                $('#modalSuccess .btn').click(function () {
+
+                                    location.reload();
+                                });
+                            }
+                            else {
+                                $('body').append('@Html.Partial("~/Areas/Admin/Views/Shared/_PartialPageError.cshtml")');
+                                $('#modalError').modal('show');
+                            }
+                        }
+                    });
+                });
+            }
+        })
+    });
+
+</script>

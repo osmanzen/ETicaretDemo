@@ -1,0 +1,192 @@
+﻿@model ETicaret.Model.Models.Entity.Product
+<style>
+    .modal-body {
+        padding: 0 20px 0px !important;
+    }
+
+    .product-essential {
+        margin-bottom: 0;
+    }
+</style>
+<script>
+    (function ($) {
+
+        'use strict';
+        var $thumbGalleryDetail1 = $('#thumbGalleryDetail'),
+            $thumbGalleryThumbs1 = $('#thumbGalleryThumbs'),
+            flag = false,
+            duration = 300;
+
+        $thumbGalleryDetail1
+            .owlCarousel({
+                items: 1,
+                margin: 10,
+                nav: false,
+                dots: false,
+                loop: false,
+                navText: []
+            })
+            .on('changed.owl.carousel', function (e) {
+                if (!flag) {
+                    flag = true;
+                    $thumbGalleryThumbs1.trigger('to.owl.carousel', [e.item.index - 1, duration, true]);
+                    flag = false;
+                }
+            });
+
+        $thumbGalleryThumbs1
+            .owlCarousel({
+                margin: 15,
+                items: 4,
+                nav: false,
+                center: false,
+                dots: false
+            })
+            .on('click', '.owl-item', function () {
+                $thumbGalleryDetail1.trigger('to.owl.carousel', [$(this).index(), duration, true]);
+            })
+            .on('changed.owl.carousel', function (e) {
+                if (!flag) {
+                    flag = true;
+                    $thumbGalleryDetail1.trigger('to.owl.carousel', [e.item.index, duration, true]);
+                    flag = false;
+                }
+            });
+
+        /*
+        Thumb Gallery 2
+        */
+        var $thumbGalleryDetail2 = $('#thumbGalleryDetail2'),
+            $thumbGalleryThumbs2 = $('#thumbGalleryThumbs2'),
+            flag = false,
+            duration = 300;
+
+        $thumbGalleryDetail2
+            .owlCarousel({
+                items: 1,
+                margin: 10,
+                nav: false,
+                dots: false
+            })
+            .on('changed.owl.carousel', function (e) {
+                if (!flag) {
+                    flag = true;
+                    $thumbGalleryThumbs2.trigger('to.owl.carousel', [e.item.index, duration, true]);
+                    flag = false;
+                }
+            });
+
+        $thumbGalleryThumbs2
+            .owlCarousel({
+                margin: 15,
+                items: 4,
+                nav: false,
+                center: true,
+                dots: false
+            })
+            .on('click', '.owl-item', function () {
+                $thumbGalleryDetail2.trigger('to.owl.carousel', [$(this).index(), duration, true]);
+
+            })
+            .on('changed.owl.carousel', function (e) {
+                if (!flag) {
+                    flag = true;
+                    $thumbGalleryDetail2.trigger('to.owl.carousel', [e.item.index, duration, true]);
+                    flag = false;
+                }
+            });
+
+    }).apply(this, [jQuery]);
+</script>
+
+<div class="modal-dialog modal-lg fade in" style="top:4vw">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-view">
+                        <div class="product-essential">
+                            <div class="row">
+
+                                <div class="product-details-box col-sm-12 col-md-4">
+                                    <div class="thumb-gallery">
+                                        <div class="owl-carousel owl-theme manual thumb-gallery-detail show-nav-hover" id="thumbGalleryDetail">
+                                            @foreach (var item in Model.ProductPictures)
+                                            {
+                                                <div>
+                                                    <span class="img-thumbnail">
+                                                        <img alt="Project Image" src="~/assets/img/products/@item.PicturePath" class="img-responsive">
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div class="owl-carousel owl-theme manual thumb-gallery-thumbs mt" id="thumbGalleryThumbs">
+
+                                            @foreach (var item in Model.ProductPictures)
+                                            {
+                                                <div>
+                                                    <span class="img-thumbnail cur-pointer">
+                                                        <img alt="@Model.ProductName" src="~/assets/img/products/@item.PicturePath" class="img-responsive">
+                                                    </span>
+                                                </div>
+                                            }
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="product-details-box col-sm-12 col-md-8">
+                                    <h3 class="product-name">
+                                        @Model.ProductModel.Make.MakeName @Model.ProductModel.ModelName @Model.ProductName
+                                    </h3>
+
+                                    <div class="product-short-desc">
+                                        <p>@Model.Description</p>
+                                    </div>
+
+                                    <div class="product-detail-info">
+                                        <div class="product-price-box">
+                                            @{  if (Model.Campaigns.Count != 0)
+                                                {
+                                                    <span class="old-price">@Model.UnitPrice.ToString("C")</span>
+                                                    var totalPrice = Model.UnitPrice;
+                                                    foreach (var campaign in Model.Campaigns.Where(x => x.EndingDate > DateTime.Now && x.StartedDate < DateTime.Now && x.IsActive == true))
+                                                    {
+                                                        totalPrice = totalPrice * (1 - campaign.Discount);
+                                                    }
+
+                                                    <span class="product-price">@totalPrice.ToString("C")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="product-price">@Model.UnitPrice</span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="product-actions">
+                                        <div class="product-detail-qty">
+                                            <input type="text" value="1" class="vertical-spinner" id="product-vqty">
+                                        </div>
+                                        <a href="#" class="addtocart btn btn-info" id="@Model.ProductID" title="Add to Cart">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span>Add to Cart</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Assets/js/demos/demo-shop-10.js"></script>

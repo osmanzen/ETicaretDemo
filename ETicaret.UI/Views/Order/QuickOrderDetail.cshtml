@@ -1,0 +1,90 @@
+﻿@model Order
+@{
+    ViewBag.Title = "QuickOrderDetail";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<div role="main" class="main">
+    <div class="container main-container">
+        <div class="wrapper-container">
+            <div class="cart">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="cart-table-wrap">
+                                @if (ViewData["success"] != null)
+                                {
+                                    <div class="alert alert-success">
+                                        <strong>Sipariş Onaylandı. </strong> @ViewData["success"].ToString()
+                                    </div>
+                                }
+                                <div class="heading heading-border heading-middle-border heading-middle-border-center">
+                                    <h2>Hızlı Alışveriş Sorgulama</h2>
+                                </div>
+                                @using (Html.BeginForm("QuickOrderDetail", "Order", FormMethod.Post))
+                                {
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3 col-md-6">
+                                            <div class="input-group input-search">
+                                                @Html.Editor("id", new { htmlAttributes = new { @class = "form-control", placeholder = "Sipariş Numarası..." } })
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                </span>
+                                            </div>
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="alert alert-danger">
+                                                    @ViewBag.Error
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (Model != null)
+                                {
+
+
+                                    <div id="result">
+                                        <blockquote class="with-borders">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <table class="table table-hover">
+                                                        @foreach (var od in Model.OrderDetails)
+                                                        {
+                                                            <tr>
+                                                                <td class="col-md-2">
+                                                                    <span class="img-thumbnail">
+                                                                        <img class="img-responsive" src="~/assets/img/products/@od.Product.ProductPictures.FirstOrDefault().PicturePath" alt="Project Image">
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    @od.Product.ProductModel.Make.MakeName @od.Product.ProductModel.ModelName @od.Product.ProductName
+                                                                </td>
+                                                                <td>
+                                                                    x @od.Count
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-6 align-center">
+                                                    <h5 class="text-capitalize">@Model.User.FullName</h5>
+                                                    <h6>Sipariş Tarihi: @Model.CreatedTime.ToString("dd/MM/yy")</h6>
+                                                    <h6>Adres: @Model.UserAddress.Address @Model.UserAddress.District.DistrictName @Model.UserAddress.District.City.CityName</h6>
+
+                                                    <h6>Fatura Tutarı: @Model.TotalAmount.ToString("C")</h6>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

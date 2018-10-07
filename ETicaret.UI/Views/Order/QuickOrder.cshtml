@@ -1,0 +1,162 @@
+﻿@model ETicaret.UI.Models.ViewModels.VMQuickOrder
+
+@{
+    ViewBag.Title = "QuickOrder";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div role="main" class="main">
+
+    <div class="container main-container">
+        <div class="wrapper-container">
+            <div class="checkout">
+                @using (Html.BeginForm())
+                {
+                    <div class="container">
+                        <div class="heading heading-border heading-middle-border heading-middle-border-center">
+                            <h1 class="h2 heading-primary font-weight-normal">Hızlı Alışveriş</h1>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-col">
+                                    <h3>Kişisel &amp; Bilgiler</h3>
+
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="form-group">
+                                                <label>Ad Soyad<span class="required">*</span></label>
+                                                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="form-group">
+                                                <label>E-Posta Adresi<span class="required">*</span></label>
+                                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="form-group">
+                                                <label>Telefon Numarası<span class="required">*</span></label>
+                                                @Html.EditorFor(model => model.Telephone, new { htmlAttributes = new { @class = "form-control", maxlength = "10" } })
+                                                @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <h3>Adres &amp; Bilgileri</h3>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="form-group wide">
+                                                <label>Adres<span class="required">*</span></label>
+                                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-6">
+                                            <div class="form-group">
+                                                <label>City<span class="required">*</span></label>
+                                                @Html.DropDownList("CityID", new SelectList((ViewBag.City as List<City>).Select(x => new { Value = x.CityID, Text = x.CityName }), "Value", "Text"), "İl Seçiniz", new { @class = "form-control mb-md" })
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-md-6">
+                                            <div class="form-group">
+                                                <label>State/Province<span class="required">*</span></label>
+
+                                                @Html.DropDownListFor(x => x.DistrictID, Enumerable.Empty<SelectListItem>(), "İlçe Seçiniz", new { @class = "form-control mb-md" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Kolon 2 - Kredi Kartı*@
+
+                            <div class="col-md-8" ng-app="comApp" ng-controller="creditCard" data-ng-init="defaultCard()">
+                                <div class="form-col">
+                                    <h3>Kredi Kartı Bilgileri</h3>
+
+                                    <div class="col-xs-12" id="newCreditCard">
+                                        <div class="col-xs-12 col-sm-5">
+                                            <label class="control-label">Kart Numarası</label>
+                                            <div class="row" style="padding-left:15px; padding-right:15px;">
+                                                <div class="col-xs-12" style="padding:0">
+                                                    @Html.EditorFor(model => model.CardNo, new { htmlAttributes = new { @class = "form-control", onkeypress = "return event.charCode >= 48 && event.charCode <= 57", value = "", maxlength = "16", ng_model = "cardNoInput", ng_change = "giris()" } })
+                                                    @Html.ValidationMessageFor(model => model.CardNo, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <label class="control-label">Adı Soyadı</label>
+                                            @Html.EditorFor(model => model.CardFullName, new { htmlAttributes = new { @class = "form-control", ng_model = "adSoyad" } })
+                                            @Html.ValidationMessageFor(model => model.CardFullName, "", new { @class = "text-danger" })
+                                            <div class="row" style="padding-bottom:3vw">
+                                                <div class="col-xs-8">
+                                                    <label class="control-label">Son. Kul. Tarihi</label>
+                                                    <div class="row">
+                                                        <div class="col-xs-6">
+                                                            @Html.DropDownList("Month", Enumerable.Range(01, 12).Select(x => new SelectListItem { Text = x.ToString() }), new { @class = "form-control", ng_model = "ay" })
+                                                            @Html.ValidationMessageFor(model => model.Month, "", new { @class = "text-danger" })
+                                                        </div>
+                                                        <div class="col-xs-6">
+                                                            @Html.DropDownList("Year", Enumerable.Range((DateTime.Now.Year % 100), 10).Select(x => new SelectListItem { Text = x.ToString() }), new { @class = "form-control", ng_model = "yil" })
+                                                            @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <label class="control-label">CVC2</label>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            @Html.EditorFor(model => model.SecurityCode, new { htmlAttributes = new { @class = "form-control", type = "text", maxlength = "3", value = "", ng_model = "secCode", onkeypress = "return event.charCode >= 48 && event.charCode <= 57" } })
+                                                            @Html.ValidationMessageFor(model => model.SecurityCode, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-offset-2 col-xs-8 col-xs-offset-2 col-sm-offset-0 col-sm-7 col-sm-offset-0">
+                                            <img class="img-responsive" src="~/Assets/img/{{img}}" />
+                                            <span class="cardNumber">{{cardNo}}</span>
+                                            <span class="fullname text-uppercase">{{adSoyad}}</span>
+                                            <span class="expDate">{{ay}}/{{yil}}</span>
+                                            <span class="secCode">{{secCode}}</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-col">
+                                    <h3>Sipariş Özeti</h3>
+
+
+
+
+
+
+
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Create" class="btn btn-default" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

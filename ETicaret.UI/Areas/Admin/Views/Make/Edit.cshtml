@@ -1,0 +1,170 @@
+﻿@model ETicaret.UI.Areas.Admin.Models.DTO.VMMakeCategory
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="content row" ng-app="makeEditApp" ng-controller="makeEditController">
+    @using (Html.BeginForm("Edit", "Make", FormMethod.Post, new { Name = "form", @ng_submit = "formSubmit($event)" }))
+    {
+        <h3 class="col-xs-6 col-xs-offset-3" style="text-align:center">@Model.Make.MakeName</h3>
+            <div class="col-md-5 col-md-offset-1">
+                @Html.HiddenFor(x=>x.Make.MakeID)
+                <div class="form-group {{((form.$submitted || form.MakeName.$touched) &&  form.MakeName.$error.required) || SameName ? 'has-error' : '' }}">
+                    @Html.LabelFor(x => x.Make.MakeName)
+                    @Html.TextBoxFor(x => x.Make.MakeName, new { @class = "form-control", @required = "", @ng_model = "makename", @ng_change = "NameControl()", @ng_init = "makename='" + Model.Make.MakeName + "'" })
+                    <span ng-show="(form.$submitted || form.MakeName.$touched) && form.MakeName.$error.required" class="help-block">Boş geçilemez!</span>
+                    <span ng-show="SameName" class="help-block">Aynı isimde Marka eklenemez!</span>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Markanın Kategorileri</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table table-hover" ng-show="TableShow">
+                                    <tr>
+                                        <th>Kategori Adı</th>
+                                        <th>Kaldır</th>
+                                    </tr>
+                                    <tr ng-repeat="c in categoryList">
+                                        <td>{{c.catname}}</td>
+                                        <td><button type="button" ng-click="delete($index)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
+                                        <td><input name="CategoryID[]" type="hidden" value="{{c.catid}}" /></td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                </div>
+
+
+                <input type="submit" class="btn btn-primary" value="Kaydet" />
+            </div>
+            <div class="col-md-5">
+
+                <div class="form-group">
+                    @Html.Label("Kategoriler")
+                    @Html.DropDownList("CategoryID", new SelectList(Model.Categories.Select(x => new { Value = x.CategoryID, Text = x.CategoryName }), "Value", "Text"), "Seçiniz", new { @Name = "", @class = "form-control", @ng_change = "GetSubCategories(cID,-1)", @ng_model = "cID" })
+                </div>
+
+                <div class="form-group" ng-repeat="div in upDiv">
+                    <label>Alt Kategori</label>
+                    <select class="form-control" ng-model="upDiv.subCategory[$index]" ng-change="GetSubCategories(upDiv.subCategory[$index],$index)">
+                        <option value="">Seçiniz</option>
+                        <option ng-repeat="option in div.categories" value="{{option.CategoryID}}">{{option.CategoryName}}</option>
+                    </select>
+                </div>
+            </div>
+
+    }
+</section>
+<script>
+
+    var app = angular.module("makeEditApp", []);
+
+    app.controller("makeEditController", function ($scope, $http) {
+
+        $scope.categoryList = [];
+        $scope.upDiv = [];
+
+        $scope.GetSubCategories = function (id, index) {
+            $scope.upDiv.splice(index + 1, $scope.upDiv.length - index);
+            if (id == "") return;//category boş ise direk çık
+
+            $http({
+                method: 'GET',
+                url: '/Admin/Category/GetSubCategoriesJson/' + id
+            }).then(function succes(response) {
+                if (response.data.length != 0) {
+
+                    $scope.upDiv.push({ categories: response.data });
+                }
+                else {
+                    if (index == -1) {
+                        $scope.add($('form select#CategoryID option:Selected').val(), $('form select#CategoryID option:Selected').text());
+                    }
+                    else {
+                        var cName = $.grep($scope.upDiv[index].categories, function (category) {
+                            return category.CategoryID == id;
+                        })[0].CategoryName;
+                        $scope.add(id, cName);
+                    }
+
+                }
+            }, function error(response) {
+                console.log(response);
+            });
+        };
+
+        $scope.add = function (id, name) {
+
+            var a = $.grep($scope.categoryList, function (category) {
+                return category.catid == id;
+            });
+            if (a.length != 0) return;
+
+            $scope.categoryList.push({ catid: id, catname: name });
+            if ($scope.categoryList.length > 0)
+                $scope.TableShow = true;
+        }
+
+        $scope.delete = function (index) {
+
+            $scope.categoryList.splice(index, 1);
+            if ($scope.categoryList.length == 0)
+                $scope.TableShow = false;
+        }
+
+        $scope.NameControl = function () {
+            $http({
+                method: 'get',
+                url: '/Admin/Make/GetMakeByName/' + $scope.makename
+            }).then(function succ(res) {
+                if (res.data.length > 0)
+                    $scope.SameName = true;
+                else
+                    $scope.SameName = false;
+            });
+        };
+
+        $scope.formSubmit = function ($event) {
+            if ($scope.form.$valid && $scope.SameName == false && $scope.categoryList.length > 0) {
+            }
+            else {
+                $event.preventDefault();
+            }
+        };
+
+        $scope.CategoryListBind = function (id) {
+            console.log('makeID:'+id);
+            $http({
+                method: 'get',
+                url: '/Admin/Make/GetCategoryByMake/' + id
+            }).then(function (response) {
+                console.log(response);
+                if (response.data.length != 0) {
+                    for (var i = 0; i < response.data.length; i++) {
+
+                        var a = $.grep($scope.categoryList, function (category) {
+                            return category.catid == response.data[i].CategoryID;
+                        });
+                        if (a.length != 0) return;
+                        $scope.categoryList.push({ catid: response.data[i].CategoryID, catname: response.data[i].CategoryName });
+                    }
+                    if ($scope.categoryList.length > 0)
+                        $scope.TableShow = true;
+                }
+            });
+        }
+        $scope.CategoryListBind('@Model.Make.MakeID');
+    });
+
+</script>

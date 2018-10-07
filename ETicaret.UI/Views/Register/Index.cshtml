@@ -1,0 +1,96 @@
+﻿@model VMUserRegister
+@{
+    ViewBag.Title = "Kaydol";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+@section styles{
+    <style>
+        .input-validation-error {
+            border: 1px solid red;
+        }
+    </style>
+}
+
+<div class="container main-container">
+    <div class="wrapper-container">
+        <section class="form-section register-form">
+            <div class="container">
+                <h1 class="h2 heading-primary font-weight-normal mb-md mt-xs">Create an Account</h1>
+
+                <div class="featured-box featured-box-primary featured-box-flat featured-box-text-left mt-md">
+                    <div class="box-content">
+
+                        @{
+                            if (ViewBag.Error != null)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    @ViewBag.Error
+                                </div>
+                            }
+                        }
+
+                        @using (Html.BeginForm(FormMethod.Post))
+                        {
+                            <h4 class="heading-primary text-uppercase mb-lg">PERSONAL INFORMATION</h4>
+                            <div class="row">
+                                <div class="col-sm-5 col-md-4">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">Full Name <span class="required">*</span></label>
+                                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", type = "text"})
+                                        @Html.ValidationMessageFor(x => x.FullName)
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-8 col-md-8">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">E-Mail <span class="required">*</span></label>
+                                        @Html.TextBoxFor(x => x.EMail, new { @class = "form-control", type = "email"})
+                                        @Html.ValidationMessageFor(x => x.EMail)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h4 class="heading-primary text-uppercase mb-lg">LOGIN INFORMATION</h4>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">Password <span class="required">*</span></label>
+                                        @Html.TextBoxFor(x => x.Password, new { @class = "form-control", type = "password" })
+                                        @Html.ValidationMessageFor(x => x.Password)
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">Confirm Password <span class="required">*</span></label>
+                                        @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control", type = "password" })
+                                        @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p class="required mt-lg mb-none">* Required Fields</p>
+
+                                    <div class="form-action clearfix mt-none">
+                                        <a href="/User/Home/Index" class="pull-left"><i class="fa fa-angle-double-left"></i> Back</a>
+
+                                        <input type="submit" class="btn btn-primary" value="Submit">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+

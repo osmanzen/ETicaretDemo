@@ -1,0 +1,91 @@
+﻿<style>
+    .custom-menu-category {
+        display: none;
+        z-index: 1000;
+        position: absolute;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        white-space: nowrap;
+        font-family: sans-serif;
+        background: #fff;
+        color: #333;
+        border-radius: 5px;
+        padding: 0;
+    }
+
+        .custom-menu-category li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style-type: none;
+            transition: all .3s ease;
+            user-select: none;
+        }
+</style>
+
+<ul class="custom-menu-category">
+    <li data-action="duzenle">Düzenle</li>
+    <li data-action="ekle">Ekle</li>
+    <li data-action="sil">Sil</li>
+</ul>
+
+
+<script>
+    $('body').on('contextmenu','form select#CategoryID', function (e) {
+        e.preventDefault();
+        $('.custom-menu-category').finish().toggle(100).
+            css({
+                top: event.pageY + 'px',
+                left: event.pageX + 'px'
+            });
+    });
+
+    $(document).bind('mousedown', function (e) {
+        if (!$(e.target).parents('.custom-menu-category').length > 0) {
+            $('.custom-menu-category').hide(100);
+        }
+    });
+
+    $('.custom-menu-category li').click(function () {
+        //alert($(this).text());
+
+        switch ($(this).attr('data-action')) {
+            case 'duzenle':
+                $.ajax({
+                    url: '/Admin/Category/EditModal/' + $('form select#CategoryID option:selected').val(),
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#categoryModal').html(result);
+                        $('#categoryModal').modal('show');
+                    }
+                });
+                break;
+            case 'ekle':
+                $.ajax({
+                    url: '/Admin/Category/AddModal',
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#categoryModal').html(result);
+                        $('#categoryModal').modal('show');
+                    }
+                });
+                break;
+            case 'sil':
+                $.ajax({
+                    url: '/Admin/Category/DeleteModal/' + $('form select#CategoryID option:selected').val(),
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#categoryModal').html(result);
+                        $('#categoryModal').modal('show');
+                    }
+                });
+                break;
+            default: break;
+        }
+
+        $('.custom-menu-category').hide(100);
+
+    });
+</script>

@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Ürün Ekleme Sayfası</h2>
+
+@Html.DropDownList("CategoryId",new SelectList(ViewBag.CategoryList,"CategoryID","CategoryName"))
+

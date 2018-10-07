@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8C9EEBBC-284B-403A-B895-280233D2A3EA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ETicaret.DAL</RootNamespace>
+    <AssemblyName>ETicaret.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abstract\IBasketProductDAL.cs" />
+    <Compile Include="Abstract\ICampaignDAL.cs" />
+    <Compile Include="Abstract\ICategoryDAL.cs" />
+    <Compile Include="Abstract\ICityDAL.cs" />
+    <Compile Include="Abstract\IDistrictDAL.cs" />
+    <Compile Include="Abstract\IMakeDAL.cs" />
+    <Compile Include="Abstract\IOrderDAL.cs" />
+    <Compile Include="Abstract\IOrderDetailDAL.cs" />
+    <Compile Include="Abstract\IOrderStatusDAL.cs" />
+    <Compile Include="Abstract\IPaymentTypeDAL.cs" />
+    <Compile Include="Abstract\IProductCommentDAL.cs" />
+    <Compile Include="Abstract\IProductDAL.cs" />
+    <Compile Include="Abstract\IProductModelDAL.cs" />
+    <Compile Include="Abstract\IProductPictureDAL.cs" />
+    <Compile Include="Abstract\IProductTechnicPropertyDAL.cs" />
+    <Compile Include="Abstract\IPropertyDAL.cs" />
+    <Compile Include="Abstract\IUserAddressDAL.cs" />
+    <Compile Include="Abstract\IUserCardDAL.cs" />
+    <Compile Include="Abstract\IUserDAL.cs" />
+    <Compile Include="Abstract\IUserDetailDAL.cs" />
+    <Compile Include="Abstract\IUserTypeDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Context\ETicaretDBContext.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFBasketProductDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFCampaignDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFCategoryDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFCityDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFDistrictDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFMakeDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFOrderDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFOrderStatusDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFPaymentTypeDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFProductCommentDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFProductDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFProductModelDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFProductPictureDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFProductTechnicPropertyDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFPropertyDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFUserAddressDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFUserCardDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFUserDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFUserDetailDAL.cs" />
+    <Compile Include="Concrete\EntityFramework\Entities\EFUserTypeDAL.cs" />
+    <Compile Include="IoC\Ninject\DALModule.cs" />
+    <Compile Include="Migrations\201801091303076_createDatabase.cs" />
+    <Compile Include="Migrations\201801091303076_createDatabase.Designer.cs">
+      <DependentUpon>201801091303076_createDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801091312507_editPK.cs" />
+    <Compile Include="Migrations\201801091312507_editPK.Designer.cs">
+      <DependentUpon>201801091312507_editPK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801092334554_deleteCampaign.cs" />
+    <Compile Include="Migrations\201801092334554_deleteCampaign.Designer.cs">
+      <DependentUpon>201801092334554_deleteCampaign.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801092340419_AddCampaign.cs" />
+    <Compile Include="Migrations\201801092340419_AddCampaign.Designer.cs">
+      <DependentUpon>201801092340419_AddCampaign.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801121451340_AddOrderStatus.cs" />
+    <Compile Include="Migrations\201801121451340_AddOrderStatus.Designer.cs">
+      <DependentUpon>201801121451340_AddOrderStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801121751143_UserCardOptional.cs" />
+    <Compile Include="Migrations\201801121751143_UserCardOptional.Designer.cs">
+      <DependentUpon>201801121751143_UserCardOptional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{757cdfcd-f961-4b36-8af4-5d749b61dd14}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ETicaretModel\ETicaret.Model.csproj">
+      <Project>{d59df644-edbf-4333-86c2-0990977648d1}</Project>
+      <Name>ETicaret.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201801091303076_createDatabase.resx">
+      <DependentUpon>201801091303076_createDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801091312507_editPK.resx">
+      <DependentUpon>201801091312507_editPK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801092334554_deleteCampaign.resx">
+      <DependentUpon>201801092334554_deleteCampaign.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801092340419_AddCampaign.resx">
+      <DependentUpon>201801092340419_AddCampaign.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801121451340_AddOrderStatus.resx">
+      <DependentUpon>201801121451340_AddOrderStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801121751143_UserCardOptional.resx">
+      <DependentUpon>201801121751143_UserCardOptional.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

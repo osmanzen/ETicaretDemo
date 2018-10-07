@@ -1,0 +1,86 @@
+﻿@model ICollection<ETicaret.Model.Models.Entity.Order>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_UserDetail.cshtml";
+}
+
+<div class="toggle toggle-primary toggle-lg" data-plugin-toggle="">
+    @if (Model.ToList().Count > 0)
+    {
+        if (TempData["success"] != null)
+        {
+            <div class="alert alert-success fade in alert-dismissable" style="margin-top:18px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                @TempData["success"].ToString()
+            </div>
+
+            <hr />
+        }
+        foreach (var order in Model)
+        {
+            <section class="toggle">
+
+                @if (order.OrderStatusID == new Guid("7A75CDFB-52A3-4455-A8C2-08D6DE333E45"))
+                {
+                    <label class="text-capitalize" style="background-color:#f2f2f2;border-left-color: #eaeaea; color:#737373">@order.User.FullName | @order.CreatedTime.ToString() | @order.OrderStatus.Status</label>
+                }
+                else if (order.OrderStatusID == new Guid("E23BAB39-9A46-412F-8B1E-9C7307221DA3"))
+                {
+                    <label class="text-capitalize" style="background-color:#fcf8e3;border-left-color: #faebcc; color:#8a6d3b">@order.User.FullName | @order.CreatedTime | @order.OrderStatus.Status</label>
+                }
+                else if (order.OrderStatusID == new Guid("397F83D3-5475-42E3-B5A5-5CB80BE26FCF"))
+                {
+                    <label class="text-capitalize" style="background-color:#dff0d8;border-left-color: #d6e9c6; color:#3c763d">@order.User.FullName | @order.CreatedTime | @order.OrderStatus.Status</label>
+                }
+                else if (order.OrderStatusID == new Guid("1ACFA5C8-7058-4155-BC74-EDB2ED04F1E6"))
+                {
+                    <label class="text-capitalize" style="background-color:#d9edf7;border-left-color: #bce8f1; color:#31708f">@order.User.FullName | @order.CreatedTime | @order.OrderStatus.Status</label>
+                }
+                <div class="toggle-content" style="display: none;">
+                    <blockquote class="with-borders">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-hover">
+                                    @foreach (var od in order.OrderDetails)
+                                    {
+                                        <tr>
+                                            <td class="col-md-2">
+                                                <span class="img-thumbnail">
+                                                    <img class="img-responsive" src="~/assets/img/products/@od.Product.ProductPictures.FirstOrDefault().PicturePath" alt="Project Image">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @od.Product.ProductModel.Make.MakeName @od.Product.ProductModel.ModelName @od.Product.ProductName
+                                            </td>
+                                            <td>
+                                                x @od.Count
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <div class="col-md-6 align-center">
+                                <h6>Fatura Tutarı: @order.TotalAmount.ToString("C")</h6>
+                                <h6>
+                                    Adres: @order.UserAddress.Address @order.UserAddress.District.DistrictName @order.UserAddress.District.City.CityName
+                                </h6>
+                                <h6>
+                                    @*Ödeme Tipi: @order.PaymentType.PaymentName*@
+                                </h6>
+                            </div>
+                        </div>
+                    </blockquote>
+                </div>
+            </section>
+        }
+    }
+    else
+    {
+        <div class="heading heading-border heading-middle-border heading-middle-border-center">
+            <h3>Kayıtlı Siparişiniz Bulunmamaktadır.</h3>
+        </div>
+    }
+
+</div>

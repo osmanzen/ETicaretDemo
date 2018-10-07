@@ -1,0 +1,156 @@
+﻿@model VMOrderAddressDetail
+@{
+    ViewBag.Title = "UserOrder";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<div role="main" class="main">
+    <div class="container main-container">
+        <div class="wrapper-container">
+            <div class="cart">
+                <div class="container">
+                    @using (Html.BeginForm("OrderNewAddress", "Order", new VMOrderAddressDetail(), FormMethod.Post))
+                    {
+                        if (Model.UserDetail == null)
+                        {
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">Telefon Numarası</label>
+                                        @Html.Editor("Telephone", new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessage("Telephone", "", new { @class = "text-danger" })
+                                    </div>
+                                </div>  <div class="col-sm-6 col-md-offset-1 col-md-5">
+                                    <div class="form-group">
+                                        <label class="font-weight-normal">Cinsiyet </label>
+                                        <div class="radio">
+                                            <label class="col-sm-3"> @Html.RadioButton("Gender", true) Bay</label>
+                                            <label class="col-sm-6"> @Html.RadioButton("Gender", false) Bayan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="heading heading-primary heading-border heading-bottom-border">
+                                    <h1>Kayıtlı Adreslerim</h1>
+                                </div>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                Başlık
+                                            </th>
+                                            <th>
+                                                Adres
+                                            </th>
+                                            <th>
+                                                İlçe
+                                            </th>
+                                            <th>
+                                                İl
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.UserAddresses)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="~/Order/UserPayment/@item.UserAddressID" class="btn btn-primary"> Seç </a>
+                                                </td>
+                                                <td>
+                                                    @item.AddressFullName
+                                                </td>
+                                                <td>
+                                                    @item.Address
+                                                </td>
+                                                <td>
+                                                    @item.District.DistrictName
+                                                </td>
+                                                <td>
+                                                    @item.District.City.CityName
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="heading heading-primary heading-border heading-bottom-border">
+                                    <h1>Yeni Adres</h1>
+                                </div>
+                                <div class="product-essential">
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label class="control-label" for="inputDefault">Başlık: </label>
+                                            </div>
+                                            <div class="col-md-12">
+                                                @Html.TextBox("AddressFullName", null, new { @class = "form-control", Required = true })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <label class="control-label" for="inputDefault">Adress: </label>
+                                        </div>
+                                        <div class="col-md-12">
+                                            @Html.TextArea("Address", new { @class = "form-control", rows = "3", Required = true })
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="col-md-3 control-label" for="inputDefault">İl</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="col-md-3 control-label" for="inputDefault">İlçe</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("CityID", new SelectList((ViewBag.City as List<City>).Select(x => new { Value = x.CityID, Text = x.CityName }), "Value", "Text", 34), new { @class = "form-control mb-md" })
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("DistrictID", new SelectList((ViewBag.District as List<District>).Select(x => new { Value = x.DistrictID, Text = x.DistrictName }), "Value", "Text", 1), new { @class = "form-control mb-md" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if (Model.UserDetail == null)
+                                    {
+                                        <input type="submit" class="btn btn-primary col-md-offset-9 col-md-3" name="udetail" value="Kaydet&Devam" />
+                                    }
+                                    else
+                                    {
+                                        <input type="submit" class="btn btn-primary col-md-offset-9 col-md-3" value="Kaydet&Devam" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('CityID').change(function () {
+        var city = { cityID: $('#CityID').val() };
+
+        $.ajax({
+            url: '/Order/getDistrict',
+            data: city,
+            dataType: 'JSON',
+            type: 'POST',
+            success: function (result) {
+                $('#DistrictID').empty();
+
+                $.each(result, function (index, district) {
+                    $('#DistrictID').append("<option value='" + district.DistrictID + "'>" + district.DistrictName + "</option>");
+                });
+            }
+        });
+    });</script>

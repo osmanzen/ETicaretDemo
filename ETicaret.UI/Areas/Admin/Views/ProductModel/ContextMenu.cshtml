@@ -1,0 +1,93 @@
+﻿
+
+<style>
+    .custom-menu-model {
+        display: none;
+        z-index: 1000;
+        position: absolute;
+        overflow: hidden;
+        border: 1px solid #ccc;
+        white-space: nowrap;
+        font-family: sans-serif;
+        background: #fff;
+        color: #333;
+        border-radius: 5px;
+        padding: 0;
+    }
+
+        .custom-menu-model li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style-type: none;
+            transition: all .3s ease;
+            user-select: none;
+        }
+</style>
+
+<ul class="custom-menu-model">
+    <li data-action="duzenle">Düzenle</li>
+    <li data-action="ekle">Ekle</li>
+    <li data-action="sil">Sil</li>
+</ul>
+
+
+<script>
+    $('form select#ModelID').on('contextmenu', function (e) {
+        e.preventDefault();
+        $('.custom-menu-model').finish().toggle(100).
+            css({
+                top: event.pageY + 'px',
+                left: event.pageX + 'px'
+            });
+    });
+
+    $(document).bind('mousedown', function (e) {
+        if (!$(e.target).parents('.custom-menu-model').length > 0) {
+            $('.custom-menu-model').hide(100);
+        }
+    });
+
+    $('.custom-menu-model li').click(function () {
+        //alert($(this).text());
+
+        switch ($(this).attr('data-action')) {
+            case 'duzenle':
+                $.ajax({
+                    url: '/Admin/Model/EditModal/' + $('form select#ModelID option:selected').val(),
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#modelModal').html(result);
+                        $('#modelModal').modal('show');
+                    }
+                });
+                break;
+            case 'ekle':
+                $.ajax({
+                    url: '/Admin/Model/AddModal/' + $('form select#MakeID option:selected').val(),
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#modelModal').html(result);
+                        $('#modelModal').modal('show');
+                    }
+                });
+                break;
+            case 'sil':
+                $.ajax({
+                    url: '/Admin/Make/DeleteModal/' + $('form select#ModelID option:selected').val(),
+                    type: 'GET',
+                    success: function (result) {
+                        //console.log(result);
+                        $('#modelModal').html(result);
+                        $('#modelModal').modal('show');
+                    }
+                });
+                break;
+            default: break;
+        }
+
+        $('.custom-menu-model').hide(100);
+
+    });
+</script>

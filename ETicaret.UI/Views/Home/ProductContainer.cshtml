@@ -1,0 +1,59 @@
+﻿@model ICollection<Product>
+
+<div class="container">
+    <div class="home-products-container">
+        <ul class="products-grid columns4">
+
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="product">
+                        <figure class="product-image-area">
+                            <a href="/Product/ProductDetail/@item.ProductID" ti title="Product Name" class="product-image">
+                                <img src="~/assets/img/products/@item.ProductPictures.OrderBy(x=>x.PicturePath).FirstOrDefault().PicturePath" alt="Product Name">
+                            </a>
+
+                            <a href="javascript:;" class="product-quickview" data-toggle="modal" data-target="#quickViewModal" data-whatever="@item.ProductID">
+                                <i class="fa fa-share-square-o"></i>
+                                <span>Quick View</span>
+                            </a>
+                        </figure>
+                        <div class="product-details-area">
+                            <h2 class="product-name"><a href="demo-shop-10-product-details.html" title="Product Name">Noa Sheer Blouse</a></h2>
+                            <div class="product-ratings">
+                                <div class="ratings-box">
+                                    <div class="rating" style="width:60%"></div>
+                                </div>
+                            </div>
+                            <div class="product-price-box">
+                                @{  if (item.Campaigns.Count != 0)
+                                    {
+                                        <span class="old-price">@item.UnitPrice.ToString("C")</span>
+                                        var totalPrice = item.UnitPrice;
+                                        foreach (var campaign in item.Campaigns)
+                                        {
+                                            totalPrice = totalPrice * (1 - campaign.Discount);
+                                        }
+
+                                        <span class="product-price">@totalPrice.ToString("C")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="product-price">@item.UnitPrice</span>
+                                    }
+                                }
+                            </div>
+
+                            <div class="product-actions">
+                                <a href="javascript:;" id="@item.ProductID" class="addtocart" title="Add to Cart">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                                    }
+        </ul>
+    </div>
+</div>

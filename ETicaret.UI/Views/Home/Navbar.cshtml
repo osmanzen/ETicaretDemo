@@ -1,0 +1,59 @@
+﻿
+@model ICollection<ETicaret.Model.Models.Entity.Category>
+
+@{
+    foreach (ETicaret.Model.Models.Entity.Category item in Model)
+    {
+        if (item.SubCategoryID == Guid.Parse("35391ff3-c30d-4a6a-b30b-14079eaaa455"))
+        {
+            <li class="dropdown dropdown-mega">
+                <a href="/Category/Index/@item.CategoryID" class="dropdown-toggle">
+
+
+                    @Html.Label(item.CategoryName)
+
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                       <div class="dropdown-mega-content">
+                           
+                                           
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        @{
+                                            foreach (ETicaret.Model.Models.Entity.Category subCat in Model)
+                                            {
+                                                if (subCat.SubCategoryID == item.CategoryID)
+                                                {
+                                                    <div class="col-md-3">
+
+                                                        <a href="/Category/Index/@subCat.CategoryID" class="dropdown-mega-sub-title">@subCat.CategoryName</a>
+                                                        <ul class="dropdown-mega-sub-nav">
+                                                            @{
+                                                                foreach (ETicaret.Model.Models.Entity.Category subtosubCat in Model)
+                                                                {
+                                                                    if (subtosubCat.SubCategoryID == subCat.CategoryID)
+                                                                    {
+                                                                        <li><a href="/Category/Index/@subtosubCat.CategoryID">@subtosubCat.CategoryName</a></li>
+                                                                    }
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        }
+    }
+}
+

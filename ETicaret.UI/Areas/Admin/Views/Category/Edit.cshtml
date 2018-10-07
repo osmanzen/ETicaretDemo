@@ -1,0 +1,168 @@
+﻿@model ETicaret.UI.Areas.Admin.Models.DTO.VMCategoryEdit
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+@*<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>*@
+
+<section class="content-header">
+
+    <p>
+        Kategori Düzenle
+    </p>
+
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Layout</a></li>
+        <li class="active">Fixed</li>
+    </ol>
+</section>
+<section class="content" ng-app="CategoryEditApp" ng-controller="CategoryEditController">
+    <div class="row">
+        @using (Html.BeginForm("Edit", "Category", new { id = Model.Category.CategoryID }, FormMethod.Post, new { @Name = "form", @ng_submit = "formSubmit($event)" }))
+        {
+
+            <div class="box-header">
+                <h3 class="col-xs-6 col-xs-offset-3" style="text-align:center">@Html.DisplayFor(x => x.Category.CategoryName)</h3>
+            </div>
+            <div class="box">
+                <div class="box-body col-md-6 col-md-offset-3">
+
+                    @foreach (ICollection<Category> item in @Model.ListCategories.Reverse())
+                    {
+                        <div class="form-group">
+                            @Html.Label("Üst Kategori")
+                            @*@Html.ActionLink(" ", "Add", null, new { @href = "javascript:;", id = "addSubCategory", @class = "btn btn-default fa fa-plus ", style = "background-color:#f4f4f4;color:#3c8dbc;height:22px;width:22px;padding:4px;margin-left:10px" })*@
+                            @Html.DropDownList("CategoryID", item.Select(x => new SelectListItem { Value = x.CategoryID.ToString(), Text = x.CategoryName, Selected = (x.CategoryID.ToString() == Model.Category.SCategory.CategoryID.ToString()) }), new { @class = "form-control" })
+
+                        </div>
+                    }
+
+
+                    <div class="form-group" ng-repeat="div in UpDiv">
+                        @Html.Label("Alt Kategori")
+                        <select class="form-control" ng-class="ng-touched" ng-attr-name="{{$index+1==SubNameIndex ? 'SubCategoryID' : ''}}" ng-change="GetSubCategories(UpDiv.cID[$index],$index)" , ng-model="UpDiv.cID[$index]">
+                            <option value="" ng-selected="selected"> Seçiniz </option>
+                            <option ng-repeat="cat in div.categories" value="{{cat.CategoryID}}"> {{cat.CategoryName}} </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group {{ ((form.$submitted || form.CategoryName.$touched) && form.CategoryName.$error.required) || SameName ? 'has-error' : ''}}">
+                        @Html.LabelFor(x => x.Category.CategoryName)
+                        @Html.EditorFor(x => x.Category.CategoryName,new { htmlAttributes = new { @class = "form-control ", Name = "CategoryName", @required = "", ng_model = "catName", @ng_change = "nameControl()" } })
+                        @Html.ValidationMessageFor(x => x.Category.CategoryName)
+                        <span ng-show="(form.$submitted || form.CategoryName.$touched)&& form.CategoryName.$error.required" class="help-block">Boş Geçilemez!</span>
+                        <span ng-show="SameName" class="help-block">Aynı isimde kategori eklenemez!</span>
+                    </div>
+                    <div class="form-group {{ (form.$submitted || form.Description.$touched) && form.Description.$error.required ? 'has-error' : ''}}">
+                        @Html.LabelFor(x => x.Category.Description)
+                        @Html.TextAreaFor(x => x.Category.Description, new { @class = " form-control ", Name = "Description", @required = "", @ng_model = "catDesc" })
+                        @Html.ValidationMessageFor(x => x.Category.Description)
+                        <span ng-show="(form.$submitted || form.Description.$touched)&& form.Description.$error.required" class="help-block">Boş Geçilemez!</span>
+                    </div>
+
+                    @Html.ActionLink("İptal", "Index", null, new { @class = "btn btn-default col-xs-4 col-xs-offset-2", style = "background-color:#e23d28f7;color:white" })
+                    <input ng-disabled="form.$invalid || !form.SubCategoryID.$touched" type="submit" class="btn btn-default col-xs-4 col-xs-offset-1" value="Kaydet" />
+
+                </div>
+            </div>
+
+        }
+    </div>
+
+</section>
+
+<div class="modal fade" id="categoryModal">
+
+</div>
+
+<script>
+
+
+
+    $('#addSubCategory').click(function () {
+        $.ajax({
+            url: '/Admin/Category/AddModal',
+            type: 'GET',
+            success: function (page) {
+                $('#categoryModal').html(page);
+                $('#categoryModal').modal('show');
+            }
+        });
+
+    });
+
+    var app = angular.module('CategoryEditApp', []);
+    app.controller('CategoryEditController', function ($scope, $http) {
+
+        $scope.SubNameIndex = 0;
+        $scope.UpDiv = [];
+        $scope.SameName = false;
+
+        $scope.GetSubCategories = function (id, index) {
+
+            $scope.SubNameIndex = index + 1;
+            $scope.UpDiv.splice(index + 1, $scope.UpDiv.length - index - 1);
+
+            if (id == '' || id == null) {
+                $scope.nameControl();
+                return;
+            }
+
+            $http({
+                method: 'GET',
+                url: '/Admin/Category/GetSubCategoriesJson/' + id
+            }).then(function success(response) {
+                if (response.data.length != 0) {
+                    $scope.UpDiv.push({ categories: response.data });
+                    $scope.SubNameIndex++;
+                    $scope.nameControl();
+                }
+            });
+        };
+
+        $scope.nameControl = function () {
+            var control = true;
+
+            if ($scope.SubNameIndex != 0) {
+                var cName = $.grep($scope.UpDiv[$scope.SubNameIndex - 1].categories, function (category) {
+                    return category.CategoryName == $scope.catName;
+                })[0];
+                if (cName != null) {
+                    $scope.SameName = true;//hata ver
+                }
+                else {
+                    $scope.SameName = false;
+                }
+            }
+            else {
+                $('select#CategoryID option').each(function (i, v) {
+                    if ($scope.catName == v.text) {
+                        $scope.SameName = true;
+                        control = false;
+                    }
+                    else {
+                        if (control) {
+                            $scope.SameName = false;
+                        }
+                    }
+                });
+            }
+        };
+
+        $scope.formSubmit = function ($event) {
+            if ($scope.form.$valid && $scope.SameName == false) {
+
+            }
+            else {
+                $event.preventDefault();
+            }
+        }
+
+    });
+
+</script>
